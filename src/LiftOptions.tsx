@@ -1,5 +1,6 @@
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import ILiftOption from "./interfaces/LiftOptions.interfaces";
+import ApiUrl from "./ApiUrl";
 
 export default function LiftOptions() {
     const [liftOptions, setLiftOptions] = useState<ILiftOption[]>([]);
@@ -7,32 +8,28 @@ export default function LiftOptions() {
     const [error, setError] = useState<string>("");
     const [userMsg, setUserMsg] = useState<string>("");
 
-    const formRef = useRef(null);
-
     useEffect(() => {
         getLiftOptions();
     }, [])
 
     async function getLiftOptions() {
-        let response: any = await fetch("http://localhost:3011/api/liftoption", {
+        console.log(ApiUrl())
+        const response: any = await fetch(`${ApiUrl()}/api/liftoption`, {
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json",
             },
         })
         const responseData: any = await response.json();
-        console.log("options ", responseData)
+        console.log(response)
         setLiftOptions(responseData);
-        setName("");
-        setUserMsg("Lift option added")
-        setTimeout(() => setUserMsg(""), 5000)
     }
 
     async function addOption(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
         try {
-            await fetch("http://localhost:3011/api/liftoption", {
+            await fetch(`${ApiUrl()}/api/liftoption`, {
                 body: JSON.stringify({ Name: name }),
                 headers: {
                     "Content-Type": "application/json",
@@ -41,6 +38,9 @@ export default function LiftOptions() {
                 method: "post"
             })
             getLiftOptions();
+            setUserMsg("Lift option added")
+            setName("");
+            setTimeout(() => setUserMsg(""), 5000)
         } catch (error: any) {
             console.log("error")
             setError(error)
@@ -51,11 +51,10 @@ export default function LiftOptions() {
     return (
         <>
             <div>
-                <p>lift options</p>
                 {options}
             </div>
             <div>
-                <form onSubmit={(e) => addOption(e)} ref={formRef}>
+                <form onSubmit={(e) => addOption(e)}>
                     <input name="Name" value={name} onChange={(e) => setName(e.target.value)} required></input>
                     <button type="submit">Add</button>
                 </form>
