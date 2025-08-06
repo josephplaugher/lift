@@ -16,7 +16,7 @@ export default function LiftSession() {
     const [lifts, setLifts] = useState<ILift[]>([]);
     const [error, setError] = useState<string>("");
     const [userMsg, setUserMsg] = useState<string>("");
-    const [Name, setName] = useState<string>("");
+    const [Name, setName] = useState<string>("Deadlift");
     const [Weight, setWeight] = useState<number | string>(20)
     const [Set1, setSet1] = useState<number | string>(0)
     const [Set2, setSet2] = useState<number | string>(0)
@@ -63,7 +63,6 @@ export default function LiftSession() {
                 },
             })
             const responseData: any = await response.json();
-            console.log("options ", responseData)
             responseData && setLifts(responseData)
             responseData && setName(responseData[0].Name)
             responseData && setWeight(20)
@@ -105,37 +104,32 @@ export default function LiftSession() {
         }
     }
 
-    const options = liftOptions.map((l: ILiftOption) =>
-        <option key={l.Id} id={l.Id} value={l.Name}>{l.Name}</option>
-    )
-
-    const l = lifts.length > 0 && lifts.map((l: ILift) =>
-        <small>
-            <div key={l.Id} id={l.Id} className="d-flex justify-content-between my-2">
-                <div>{l.Date}</div>
-                <div>{l.Name}</div>
-                <div>{l.Weight}</div>
-                <div>{l.Set1 && l.Set1}</div>
-                <div>{l.Set2 && l.Set2}</div>
-                <div>{l.Set3 && l.Set3}</div>
-                <div>{l.Set4 && l.Set4}</div>
-                <div>{l.Set5 && l.Set5}</div>
-            </div>
-        </small>
-    )
-
     return (
         <>
             <div className="container-fluid py-0 px-2" style={{ height: "80vh" }}>
                 <div className="row overflow-scroll">
-                    {l}
+                    {lifts.length > 0 && lifts.map((l: ILift) =>
+                        <small key={l.Id}>
+                            <div id={l.Id} className="d-flex justify-content-between my-2">
+                                <div>{l.Date}</div>
+                                <div>{l.Name}</div>
+                                <div>{l.Weight}</div>
+                                <div>{l.Set1 && l.Set1}</div>
+                                <div>{l.Set2 && l.Set2}</div>
+                                <div>{l.Set3 && l.Set3}</div>
+                                <div>{l.Set4 && l.Set4}</div>
+                                <div>{l.Set5 && l.Set5}</div>
+                            </div>
+                        </small>)}
                 </div>
             </div>
             <div className="container-fluid pb-3" style={{ bottom: "0", position: "absolute" }}>
                 <div className="row pb-3" >
                     <div className="col">
                         <select onChange={(e) => setName(e.target.value)} className="form-control">
-                            {options}
+                            {liftOptions.map((l: ILiftOption) =>
+                                <option key={l.Id} id={l.Id} value={l.Name}>{l.Name}</option>
+                            )}
                         </select>
                     </div>
                 </div>
@@ -143,7 +137,7 @@ export default function LiftSession() {
                 <div className="row">
                     <div className="col">
                         <form onSubmit={(e) => addSets(e)}>
-                            <input name="name" value={Name} hidden></input>
+                            <input name="name" value={Name} hidden onChange={() => { }}></input>
                             <div className="d-flex justify-content-between align-items-center">
                                 <div className={`btn ${kg20 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg20 == 0 ? setKg20(20) : setKg20(0)}><small>20kg</small></div>
                                 <div className={`btn ${kg15 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg15 == 0 ? setKg15(15) : setKg15(0)}><small>15kg</small></div>
@@ -156,24 +150,24 @@ export default function LiftSession() {
                             </div>
                             <div className="d-flex justify-content-between py-3">
                                 <div style={inputgroup}>
-                                    <label htmlFor="Weight">Set 1</label>
-                                    <input type="number" style={liftInputStyle} name="Set1" value={Set1} onChange={(e) => setSet1(parseInt(e.target.value))} pattern="\d*" inputMode="numeric" required></input>
+                                    <label htmlFor="Set1">Set 1</label>
+                                    <input type="number" style={liftInputStyle} id="Set1" name="Set1" value={Set1} onChange={(e) => setSet1(parseInt(e.target.value))} pattern="\d*" inputMode="numeric" required></input>
                                 </div>
                                 <div style={inputgroup}>
-                                    <label htmlFor="Weight">Set 2</label>
-                                    <input type="number" style={liftInputStyle} name="Set2" value={Set2} onChange={(e) => setSet2(parseInt(e.target.value))} pattern="\d*" inputMode="numeric"></input>
+                                    <label htmlFor="Set2">Set 2</label>
+                                    <input type="number" style={liftInputStyle} id="Set2" name="Set2" value={Set2} onChange={(e) => setSet2(parseInt(e.target.value))} pattern="\d*" inputMode="numeric"></input>
                                 </div>
                                 <div style={inputgroup}>
-                                    <label htmlFor="Weight">Set 3</label>
-                                    <input type="number" style={liftInputStyle} name="Set3" value={Set3} onChange={(e) => setSet3(parseInt(e.target.value))} pattern="\d*" inputMode="numeric"></input>
+                                    <label htmlFor="Set3">Set 3</label>
+                                    <input type="number" style={liftInputStyle} id="Set3" name="Set3" value={Set3} onChange={(e) => setSet3(parseInt(e.target.value))} pattern="\d*" inputMode="numeric"></input>
                                 </div>
                                 <div style={inputgroup}>
-                                    <label htmlFor="Weight">Set 4</label>
-                                    <input type="number" style={liftInputStyle} name="Set4" value={Set4} onChange={(e) => setSet4(parseInt(e.target.value))} pattern="\d*" inputMode="numeric"></input>
+                                    <label htmlFor="Set4">Set 4</label>
+                                    <input type="number" style={liftInputStyle} id="Set4" name="Set4" value={Set4} onChange={(e) => setSet4(parseInt(e.target.value))} pattern="\d*" inputMode="numeric"></input>
                                 </div>
                                 <div style={inputgroup}>
-                                    <label htmlFor="Weight">Set 5</label>
-                                    <input type="number" style={liftInputStyle} name="Set5" value={Set5} onChange={(e) => setSet5(parseInt(e.target.value))} pattern="\d*" inputMode="numeric"></input>
+                                    <label htmlFor="Set5">Set 5</label>
+                                    <input type="number" style={liftInputStyle} id="Set5" name="Set5" value={Set5} onChange={(e) => setSet5(parseInt(e.target.value))} pattern="\d*" inputMode="numeric"></input>
                                 </div>
                             </div>
                             <div className="d-flex justify-content-end">
