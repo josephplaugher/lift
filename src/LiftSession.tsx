@@ -17,8 +17,8 @@ const inputgroup: React.CSSProperties = {
 
 export default function LiftSession() {
     const queryClient = useQueryClient();
-    
-    const [liftOptions, setLiftOptions] = useState<ILiftOption[]>([]);
+
+    // const [liftOptions, setLiftOptions] = useState<ILiftOption[]>([]);
     const [error, setError] = useState<string>("");
     const [userMsg, setUserMsg] = useState<string>("");
     const [Name, setName] = useState<string>("Deadlift");
@@ -34,30 +34,30 @@ export default function LiftSession() {
     const [kg5, setKg5] = useState<number>(0)
     const [kg2_5, setKg2_5] = useState<number>(0)
 
-    const liftHistoryQuery = useQuery<ILift[]>({ queryKey: [Name], queryFn: () => GetLiftsByName(Name) })
-    const liftOptionsQuery = useQuery<ILift[]>({ queryKey: [Name], queryFn: GetLiftOptions })
+    const liftHistoryQuery = useQuery<ILift[]>({ queryKey: ['liftHistory', Name], queryFn: () => GetLiftsByName(Name) })
+    const liftOptionsQuery = useQuery<ILiftOption[]>({ queryKey: ['liftOptions', Name], queryFn: GetLiftOptions })
 
     useEffect(() => {
-        getLiftOptions();
-    }, [])
+        console.log("options", liftOptionsQuery.data)
+    }, [liftHistoryQuery, liftOptionsQuery])
 
     useEffect(() => {
         const w: number = ((kg20 + kg15 + kg10 + kg5 + kg2_5) * 2) + 20;
         setWeight(w)
     }, [kg20, kg15, kg10, kg5, kg2_5])
 
-    async function getLiftOptions() {
-        const response: any = await fetch(`${ApiUrl()}/api/liftoption`, {
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-            },
-        })
-        const responseData: any = await response.json();
-        setLiftOptions(responseData);
-    }
+    // async function getLiftOptions() {
+    //     const response: any = await fetch(`${ApiUrl()}/api/liftoption`, {
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //             "Accept": "application/json",
+    //         },
+    //     })
+    //     const responseData: any = await response.json();
+    //     setLiftOptions(responseData);
+    // }
 
-    
+
 
     async function addSets(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -100,23 +100,23 @@ export default function LiftSession() {
                 <div className="row overflow-scroll">
                     {liftHistoryQuery.status === 'pending' ? (
                         <LoadingIndicator />
-                    ): liftHistoryQuery.status === 'error' ? (
+                    ) : liftHistoryQuery.status === 'error' ? (
                         <ErrorIndicator error={liftHistoryQuery.error.message} />
-                    ): (
+                    ) : (
                         <>
-                        {liftHistoryQuery.data.map((l: ILift) =>
-                        <small key={l.Id}>
-                            <div id={l.Id} className="d-flex justify-content-between my-2">
-                                <div>{l.Date}</div>
-                                <div>{l.Name}</div>
-                                <div>{l.Weight}</div>
-                                <div>{l.Set1 && l.Set1}</div>
-                                <div>{l.Set2 && l.Set2}</div>
-                                <div>{l.Set3 && l.Set3}</div>
-                                <div>{l.Set4 && l.Set4}</div>
-                                <div>{l.Set5 && l.Set5}</div>
-                            </div>
-                        </small>)}  
+                            {liftHistoryQuery.data.map((l: ILift) =>
+                                <small key={l.Id}>
+                                    <div id={l.Id} className="d-flex justify-content-between my-2">
+                                        <div>{l.Date}</div>
+                                        <div>{l.Name}</div>
+                                        <div>{l.Weight}</div>
+                                        <div>{l.Set1 && l.Set1}</div>
+                                        <div>{l.Set2 && l.Set2}</div>
+                                        <div>{l.Set3 && l.Set3}</div>
+                                        <div>{l.Set4 && l.Set4}</div>
+                                        <div>{l.Set5 && l.Set5}</div>
+                                    </div>
+                                </small>)}
                         </>
                     )}
                 </div>
@@ -124,11 +124,20 @@ export default function LiftSession() {
             <div className="container-fluid pb-3" style={{ bottom: "0", position: "absolute" }}>
                 <div className="row pb-3" >
                     <div className="col">
-                        <select onChange={(e) => setName(e.target.value)} className="form-control">
-                            {liftOptions.map((l: ILiftOption) =>
-                                <option key={l.Id} id={l.Id} value={l.Name}>{l.Name}</option>
-                            )}
-                        </select>
+                        <>
+                            <select onChange={(e) => setName(e.target.value)} 
+                            className={`form-control ${liftOptionsQuery.status == "pending" ? "bg-warning" : liftOptionsQuery.status == "error" ? "text-danger" : ""}`}>
+                                {liftOptionsQuery.status === 'pending' ? (
+                                    <option value="">Getting lift options...</option>
+                                ) : liftOptionsQuery.status === 'error' ? (
+                                    <option value="">Something went wrong...</option>
+                                ) : (
+                                    liftOptionsQuery.data.map((l: ILiftOption) =>
+                                        <option key={l.Id} id={l.Id} value={l.Name}>{l.Name}</option>
+                                    )
+                                )}
+                            </select>
+                        </>
                     </div>
                 </div>
 

@@ -9,3 +9,27 @@ input[type='number']::-webkit-inner-spin-button {
 input[type='number'] {
   -moz-appearance: textfield;
 }
+
+/* Container centering (optional) */
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%; /* Or specific height */
+}
+
+/* Spinner appearance */
+.spinner-border.custom-spinner {
+  width: 4rem;       /* Size */
+  height: 4rem;      /* Size */
+  border-width: 0.6rem; /* Thickness */
+  color: #007bff;    /* Spinner color */
+}
+
+/* Optional: make it fixed in the viewport */
+.spinner-fixed-center {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

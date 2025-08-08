@@ -22,7 +22,7 @@ function App() {
       {authorized &&
         <Lift />
       }
-      <ReactQueryDevtools initialIsOpen={false} buttonPosition='bottom-left' position='top'/>
+      <ReactQueryDevtools initialIsOpen={false} buttonPosition='bottom-left' position='bottom'/>
     </QueryClientProvider>
   )
 }
