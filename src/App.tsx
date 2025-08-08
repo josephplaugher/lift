@@ -1,12 +1,19 @@
 import { useState } from 'react'
 import './App.css'
 import Lift from './Lift'
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+
+const queryClient = new QueryClient();
 
 function App() {
   const [authorized] = useState<boolean>(true)
 
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       {!authorized &&
         <div>
           <p>to do: setup login</p>
@@ -15,7 +22,8 @@ function App() {
       {authorized &&
         <Lift />
       }
-    </>
+      <ReactQueryDevtools initialIsOpen={false} buttonPosition='bottom-left' position='top'/>
+    </QueryClientProvider>
   )
 }
 

@@ -2,6 +2,10 @@ import { FormEvent, useEffect, useState } from "react";
 import ILift from "./interfaces/ILift.interface";
 import ILiftOption from "./interfaces/LiftOptions.interfaces";
 import ApiUrl from "./ApiUrl";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import GetLiftsByName from "./data/GetLiftHistory";
+import { ErrorIndicator, LoadingIndicator } from "./components/StatusIndicators";
+import GetLiftOptions from "./data/GetLiftOptions";
 
 const liftInputStyle: React.CSSProperties = {
     width: "60px"
@@ -12,8 +16,9 @@ const inputgroup: React.CSSProperties = {
 }
 
 export default function LiftSession() {
+    const queryClient = useQueryClient();
+    
     const [liftOptions, setLiftOptions] = useState<ILiftOption[]>([]);
-    const [lifts, setLifts] = useState<ILift[]>([]);
     const [error, setError] = useState<string>("");
     const [userMsg, setUserMsg] = useState<string>("");
     const [Name, setName] = useState<string>("Deadlift");
@@ -29,14 +34,12 @@ export default function LiftSession() {
     const [kg5, setKg5] = useState<number>(0)
     const [kg2_5, setKg2_5] = useState<number>(0)
 
-    useEffect(() => {
-        getLiftOptions();
-        getLifts();
-    }, [])
+    const liftHistoryQuery = useQuery<ILift[]>({ queryKey: [Name], queryFn: () => GetLiftsByName(Name) })
+    const liftOptionsQuery = useQuery<ILift[]>({ queryKey: [Name], queryFn: GetLiftOptions })
 
     useEffect(() => {
-        getLifts();
-    }, [Name])
+        getLiftOptions();
+    }, [])
 
     useEffect(() => {
         const w: number = ((kg20 + kg15 + kg10 + kg5 + kg2_5) * 2) + 20;
@@ -54,20 +57,7 @@ export default function LiftSession() {
         setLiftOptions(responseData);
     }
 
-    async function getLifts() {
-        if (Name) {
-            const response: any = await fetch(`${ApiUrl()}/api/lift/${Name.replace(" ", "_")}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json",
-                },
-            })
-            const responseData: any = await response.json();
-            responseData && setLifts(responseData)
-            responseData && setName(responseData[0].Name)
-            responseData && setWeight(20)
-        }
-    }
+    
 
     async function addSets(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -89,7 +79,7 @@ export default function LiftSession() {
                 },
                 method: "post"
             })
-            getLifts();
+            liftHistoryQuery.refetch();
             setUserMsg("Sets Recorded")
             setTimeout(() => setUserMsg(""), 5000)
             setSet1(0)
@@ -108,7 +98,13 @@ export default function LiftSession() {
         <>
             <div className="container-fluid py-0 px-2" style={{ height: "80vh" }}>
                 <div className="row overflow-scroll">
-                    {lifts.length > 0 && lifts.map((l: ILift) =>
+                    {liftHistoryQuery.status === 'pending' ? (
+                        <LoadingIndicator />
+                    ): liftHistoryQuery.status === 'error' ? (
+                        <ErrorIndicator error={liftHistoryQuery.error.message} />
+                    ): (
+                        <>
+                        {liftHistoryQuery.data.map((l: ILift) =>
                         <small key={l.Id}>
                             <div id={l.Id} className="d-flex justify-content-between my-2">
                                 <div>{l.Date}</div>
@@ -120,7 +116,9 @@ export default function LiftSession() {
                                 <div>{l.Set4 && l.Set4}</div>
                                 <div>{l.Set5 && l.Set5}</div>
                             </div>
-                        </small>)}
+                        </small>)}  
+                        </>
+                    )}
                 </div>
             </div>
             <div className="container-fluid pb-3" style={{ bottom: "0", position: "absolute" }}>
