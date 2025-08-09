@@ -32,7 +32,7 @@ export default function LiftSession() {
     return (
         <>
             <div className="container-fluid py-0 px-2" style={{ height: "80vh" }}>
-                <div className="row overflow-scroll">
+                <div className="row overflow-scroll h-75">
                     {liftHistoryQuery.status === 'pending' ? (
                         <LoadingIndicator />
                     ) : liftHistoryQuery.status === 'error' ? (
@@ -56,7 +56,7 @@ export default function LiftSession() {
                     )}
                 </div>
             </div>
-            <div className="container-fluid pb-3" style={{ bottom: "0", position: "absolute" }}>
+            <div className="container-fluid py-3 border border-4 border-primary" style={{ bottom: "0", position: "absolute" }}>
                 <div className="row pb-3" >
                     <div className="col">
                         <>
