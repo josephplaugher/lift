@@ -1,29 +1,15 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import ILiftOption from "./interfaces/LiftOptions.interfaces";
 import ApiUrl from "./ApiUrl";
+import { useQuery } from "@tanstack/react-query";
+import GetLiftOptions from "./data/GetLiftOptions";
+import { ErrorIndicator, LoadingIndicator } from "./components/StatusIndicators";
 
 export default function LiftOptions() {
-    const [liftOptions, setLiftOptions] = useState<ILiftOption[]>([]);
     const [name, setName] = useState<string>("");
     const [error, setError] = useState<string>("");
     const [userMsg, setUserMsg] = useState<string>("");
-
-    useEffect(() => {
-        getLiftOptions();
-    }, [])
-
-    async function getLiftOptions() {
-        console.log(ApiUrl())
-        const response: any = await fetch(`${ApiUrl()}/api/liftoption`, {
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-            },
-        })
-        const responseData: any = await response.json();
-        console.log(response)
-        setLiftOptions(responseData);
-    }
+    const liftOptionsQuery = useQuery<ILiftOption[]>({ queryKey: ['liftOptions'], queryFn: GetLiftOptions })
 
     async function addOption(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -37,7 +23,7 @@ export default function LiftOptions() {
                 },
                 method: "post"
             })
-            getLiftOptions();
+            liftOptionsQuery.refetch();
             setUserMsg("Lift option added")
             setName("");
             setTimeout(() => setUserMsg(""), 5000)
@@ -47,11 +33,18 @@ export default function LiftOptions() {
         }
     }
 
-    const options = liftOptions.map((l: ILiftOption) => <div key={l.Id} id={l.Id}>{l.Name}</div>)
     return (
         <>
             <div>
-                {options}
+                {liftOptionsQuery.status === 'pending' ? (
+                    <LoadingIndicator />
+                ) : liftOptionsQuery.status === 'error' ? (
+                    <ErrorIndicator error={liftOptionsQuery.error.message} />
+                ) : (
+                    <>
+                        {liftOptionsQuery.data.map((l: ILiftOption) => <div className="m-2" key={l.Id} id={l.Id}>{l.Name}</div>)}
+                    </>
+                )}
             </div>
             <div>
                 <form onSubmit={(e) => addOption(e)}>
