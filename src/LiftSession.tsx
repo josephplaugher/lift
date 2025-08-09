@@ -1,98 +1,32 @@
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ILift from "./interfaces/ILift.interface";
 import ILiftOption from "./interfaces/LiftOptions.interfaces";
-import ApiUrl from "./ApiUrl";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import GetLiftsByName from "./data/GetLiftHistory";
 import { ErrorIndicator, LoadingIndicator } from "./components/StatusIndicators";
 import GetLiftOptions from "./data/GetLiftOptions";
-
-const liftInputStyle: React.CSSProperties = {
-    width: "60px"
-}
-
-const inputgroup: React.CSSProperties = {
-    display: "flex", flexDirection: "column", alignItems: "center", padding: "3px"
-}
+import useAddSets from "./hooks/useAddSet";
+import { inputgroup, liftInputStyle } from "./constants/constants";
 
 export default function LiftSession() {
-    const queryClient = useQueryClient();
-
-    // const [liftOptions, setLiftOptions] = useState<ILiftOption[]>([]);
     const [error, setError] = useState<string>("");
     const [userMsg, setUserMsg] = useState<string>("");
     const [Name, setName] = useState<string>("Deadlift");
-    const [Weight, setWeight] = useState<number | string>(20)
-    const [Set1, setSet1] = useState<number | string>(0)
-    const [Set2, setSet2] = useState<number | string>(0)
-    const [Set3, setSet3] = useState<number | string>(0)
-    const [Set4, setSet4] = useState<number | string>(0)
-    const [Set5, setSet5] = useState<number | string>(0)
-    const [kg20, setKg20] = useState<number>(0)
-    const [kg15, setKg15] = useState<number>(0)
-    const [kg10, setKg10] = useState<number>(0)
-    const [kg5, setKg5] = useState<number>(0)
-    const [kg2_5, setKg2_5] = useState<number>(0)
+    
+    const [kg20, setKg20] = useState<number>(0);
+    const [kg15, setKg15] = useState<number>(0);
+    const [kg10, setKg10] = useState<number>(0);
+    const [kg5, setKg5] = useState<number>(0);
+    const [kg2_5, setKg2_5] = useState<number>(0);
 
     const liftHistoryQuery = useQuery<ILift[]>({ queryKey: ['liftHistory', Name], queryFn: () => GetLiftsByName(Name) })
     const liftOptionsQuery = useQuery<ILiftOption[]>({ queryKey: ['liftOptions', Name], queryFn: GetLiftOptions })
-
-    useEffect(() => {
-        console.log("options", liftOptionsQuery.data)
-    }, [liftHistoryQuery, liftOptionsQuery])
+    const { AddSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useAddSets(liftHistoryQuery, Name, setUserMsg, setError);
 
     useEffect(() => {
         const w: number = ((kg20 + kg15 + kg10 + kg5 + kg2_5) * 2) + 20;
         setWeight(w)
     }, [kg20, kg15, kg10, kg5, kg2_5])
-
-    // async function getLiftOptions() {
-    //     const response: any = await fetch(`${ApiUrl()}/api/liftoption`, {
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             "Accept": "application/json",
-    //         },
-    //     })
-    //     const responseData: any = await response.json();
-    //     setLiftOptions(responseData);
-    // }
-
-
-
-    async function addSets(e: FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-
-        try {
-            await fetch(`${ApiUrl()}/api/lift`, {
-                body: JSON.stringify({
-                    Name,
-                    Weight,
-                    Set1,
-                    Set2,
-                    Set3,
-                    Set4,
-                    Set5
-                }),
-                headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                },
-                method: "post"
-            })
-            liftHistoryQuery.refetch();
-            setUserMsg("Sets Recorded")
-            setTimeout(() => setUserMsg(""), 5000)
-            setSet1(0)
-            setSet2(0)
-            setSet3(0)
-            setSet4(0)
-            setSet5(0)
-            setWeight(20)
-        } catch (error: any) {
-            console.log("error")
-            setError(error)
-        }
-    }
 
     return (
         <>
@@ -125,8 +59,8 @@ export default function LiftSession() {
                 <div className="row pb-3" >
                     <div className="col">
                         <>
-                            <select onChange={(e) => setName(e.target.value)} 
-                            className={`form-control ${liftOptionsQuery.status == "pending" ? "bg-warning" : liftOptionsQuery.status == "error" ? "text-danger" : ""}`}>
+                            <select onChange={(e) => setName(e.target.value)}
+                                className={`form-control ${liftOptionsQuery.status == "pending" ? "bg-warning" : liftOptionsQuery.status == "error" ? "text-danger" : ""}`}>
                                 {liftOptionsQuery.status === 'pending' ? (
                                     <option value="">Getting lift options...</option>
                                 ) : liftOptionsQuery.status === 'error' ? (
@@ -143,7 +77,7 @@ export default function LiftSession() {
 
                 <div className="row">
                     <div className="col">
-                        <form onSubmit={(e) => addSets(e)}>
+                        <form onSubmit={(e) => AddSets(e)}>
                             <input name="name" value={Name} hidden onChange={() => { }}></input>
                             <div className="d-flex justify-content-between align-items-center">
                                 <div className={`btn ${kg20 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg20 == 0 ? setKg20(20) : setKg20(0)}><small>20kg</small></div>
