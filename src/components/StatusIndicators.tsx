@@ -1,6 +1,14 @@
 export function LoadingIndicator() {
-    return <div className="spinner-container my-2">
+    return <div className="my-2 spinner-container">
         <div className="spinner-border custom-spinner" role="status">
+            <span className="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+
+export function LoadingIndicatorFullScreen() {
+    return <div className="spinner-overlay">
+        <div className="spinner-border" role="status">
             <span className="visually-hidden">Loading...</span>
         </div>
     </div>

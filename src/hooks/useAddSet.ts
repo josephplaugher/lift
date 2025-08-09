@@ -3,7 +3,8 @@ import ApiUrl from "../ApiUrl";
 
 export default function useAddSets(
     liftHistoryQuery: any, Name: string, 
-    setUserMsg: React.Dispatch<SetStateAction<string>>,setError: Dispatch<SetStateAction<string>>) {
+    setUserMsg: React.Dispatch<SetStateAction<string>>,setError: Dispatch<SetStateAction<string>>,
+    loading: boolean, setLoading: Dispatch<SetStateAction<boolean>>) {
     const [Weight, setWeight] = useState<number | string>(20);
     const [Set1, setSet1] = useState<number | string>(0);
     const [Set2, setSet2] = useState<number | string>(0);
@@ -12,6 +13,8 @@ export default function useAddSets(
     const [Set5, setSet5] = useState<number | string>(0);
 
     async function AddSets(e: FormEvent<HTMLFormElement>): Promise<void> {
+        e.preventDefault();
+        setLoading(true);
         try {
             await fetch(`${ApiUrl()}/api/lift`, {
                 body: JSON.stringify({
@@ -30,7 +33,7 @@ export default function useAddSets(
                 method: "post"
             })
             liftHistoryQuery.refetch();
-            setUserMsg("Sets Recorded")
+            setUserMsg("Sets Recorded!")
             setTimeout(() => setUserMsg(""), 5000)
             setSet1(0)
             setSet2(0)
@@ -38,9 +41,11 @@ export default function useAddSets(
             setSet4(0)
             setSet5(0)
             setWeight(20)
+            setLoading(false);
         } catch (error: any) {
             console.log("error")
             setError(error)
+            setLoading(false);
         }
     }
 
