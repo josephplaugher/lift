@@ -22,23 +22,48 @@ export default function LiftHistory() {
 
     const l = lifts.length > 0 && lifts.map((l: ILift) =>
         <small>
-            <div key={l.Id} id={l.Id} className="d-flex justify-content-between my-2">
-                <div>{l.Date}</div>
-                <div>{l.Name}</div>
-                <div>{l.Weight}</div>
-                <div>{l.Set1 && l.Set1}</div>
-                <div>{l.Set2 && l.Set2}</div>
-                <div>{l.Set3 && l.Set3}</div>
-                <div>{l.Set4 && l.Set4}</div>
-                <div>{l.Set5 && l.Set5}</div>
-            </div>
+            <tr key={l.Id} id={l.Id} className="d-flex justify-content-between my-2">
+                <td>{l.Date}</td>
+                <td>{l.Name}</td>
+                <td>{l.Weight}</td>
+                <td>{l.Set1 && l.Set1}</td>
+                <td>{l.Set2 && l.Set2}</td>
+                <td>{l.Set3 && l.Set3}</td>
+                <td>{l.Set4 && l.Set4}</td>
+                <td>{l.Set5 && l.Set5}</td>
+            </tr>
         </small>
     )
 
     return (
-        <div className="container-fluid py-0 px-2" style={{ height: "80vh" }}>
-            <div className="row overflow-scroll">
-                {l}
+        <div className="container-fluid py-0 px-2" style={{ height: "90vh" }}>
+            <div className="row overflow-auto h-100 p-2">
+                {lifts.length > 0 && (
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Lift</th>
+                                <th>KG</th>
+                                <th>Sets</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {lifts.map((l: ILift) =>
+                                <tr key={l.Id} id={l.Id}>
+                                    <td>{l.Date}</td>
+                                    <td>{l.Name}</td>
+                                    <td>{l.Weight}</td>
+                                    <td>{l.Set1 && l.Set1},
+                                        {l.Set2 && l.Set2},
+                                        {l.Set3 && l.Set3},
+                                        {l.Set4 && l.Set4},
+                                        {l.Set5 && l.Set5}</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                )}
             </div>
         </div>
     )
