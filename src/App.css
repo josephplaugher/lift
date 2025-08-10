@@ -9,3 +9,40 @@ input[type='number']::-webkit-inner-spin-button {
 input[type='number'] {
   -moz-appearance: textfield;
 }
+
+/* Container centering (optional) */
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%; /* Or specific height */
+}
+
+/* Spinner appearance */
+.spinner-border.custom-spinner {
+  width: 4rem;       /* Size */
+  height: 4rem;      /* Size */
+  border-width: 0.6rem; /* Thickness */
+  color: #007bff;    /* Spinner color */
+}
+
+/* full screen spinner */
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4); /* semi-transparent */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* make sure it’s above everything */
+}
+
+.spinner-overlay .spinner-border {
+  width: 8rem;
+  height: 8rem;
+  border-width: 1rem; /* Thickness */
+  color: #007bff;    /* Spinner color */
+}

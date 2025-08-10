@@ -1,142 +1,71 @@
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ILift from "./interfaces/ILift.interface";
 import ILiftOption from "./interfaces/LiftOptions.interfaces";
-import ApiUrl from "./ApiUrl";
-
-const liftInputStyle: React.CSSProperties = {
-    width: "60px"
-}
-
-const inputgroup: React.CSSProperties = {
-    display: "flex", flexDirection: "column", alignItems: "center", padding: "3px"
-}
+import { useQuery } from "@tanstack/react-query";
+import GetLiftHistory from "./data/GetLiftHistory";
+import { ErrorIndicator, LoadingIndicator, LoadingIndicatorFullScreen } from "./components/StatusIndicators";
+import GetLiftOptions from "./data/GetLiftOptions";
+import useAddSets from "./hooks/useAddSet";
+import { inputgroup, liftInputStyle } from "./constants/constants";
+import LiftHistoryTable from "./components/LiftHistoryTable";
 
 export default function LiftSession() {
-    const [liftOptions, setLiftOptions] = useState<ILiftOption[]>([]);
-    const [lifts, setLifts] = useState<ILift[]>([]);
     const [error, setError] = useState<string>("");
+    const [loading, setLoading] = useState<boolean>(false);
     const [userMsg, setUserMsg] = useState<string>("");
     const [Name, setName] = useState<string>("Deadlift");
-    const [Weight, setWeight] = useState<number | string>(20)
-    const [Set1, setSet1] = useState<number | string>(0)
-    const [Set2, setSet2] = useState<number | string>(0)
-    const [Set3, setSet3] = useState<number | string>(0)
-    const [Set4, setSet4] = useState<number | string>(0)
-    const [Set5, setSet5] = useState<number | string>(0)
-    const [kg20, setKg20] = useState<number>(0)
-    const [kg15, setKg15] = useState<number>(0)
-    const [kg10, setKg10] = useState<number>(0)
-    const [kg5, setKg5] = useState<number>(0)
-    const [kg2_5, setKg2_5] = useState<number>(0)
 
-    useEffect(() => {
-        getLiftOptions();
-        getLifts();
-    }, [])
+    const [kg20, setKg20] = useState<number>(0);
+    const [kg15, setKg15] = useState<number>(0);
+    const [kg10, setKg10] = useState<number>(0);
+    const [kg5, setKg5] = useState<number>(0);
+    const [kg2_5, setKg2_5] = useState<number>(0);
 
-    useEffect(() => {
-        getLifts();
-    }, [Name])
+    const liftHistoryQuery = useQuery<ILift[]>({ queryKey: ['liftHistory', Name], queryFn: () => GetLiftHistory(Name) })
+    const liftOptionsQuery = useQuery<ILiftOption[]>({ queryKey: ['liftOptions'], queryFn: GetLiftOptions })
+    const { AddSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useAddSets(liftHistoryQuery, Name, setUserMsg, setError, loading, setLoading);
 
     useEffect(() => {
         const w: number = ((kg20 + kg15 + kg10 + kg5 + kg2_5) * 2) + 20;
         setWeight(w)
     }, [kg20, kg15, kg10, kg5, kg2_5])
 
-    async function getLiftOptions() {
-        const response: any = await fetch(`${ApiUrl()}/api/liftoption`, {
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-            },
-        })
-        const responseData: any = await response.json();
-        setLiftOptions(responseData);
-    }
-
-    async function getLifts() {
-        if (Name) {
-            const response: any = await fetch(`${ApiUrl()}/api/lift/${Name.replace(" ", "_")}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json",
-                },
-            })
-            const responseData: any = await response.json();
-            responseData && setLifts(responseData)
-            responseData && setName(responseData[0].Name)
-            responseData && setWeight(20)
-        }
-    }
-
-    async function addSets(e: FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-
-        try {
-            await fetch(`${ApiUrl()}/api/lift`, {
-                body: JSON.stringify({
-                    Name,
-                    Weight,
-                    Set1,
-                    Set2,
-                    Set3,
-                    Set4,
-                    Set5
-                }),
-                headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                },
-                method: "post"
-            })
-            getLifts();
-            setUserMsg("Sets Recorded")
-            setTimeout(() => setUserMsg(""), 5000)
-            setSet1(0)
-            setSet2(0)
-            setSet3(0)
-            setSet4(0)
-            setSet5(0)
-            setWeight(20)
-        } catch (error: any) {
-            console.log("error")
-            setError(error)
-        }
-    }
-
     return (
         <>
             <div className="container-fluid py-0 px-2" style={{ height: "80vh" }}>
-                <div className="row overflow-scroll">
-                    {lifts.length > 0 && lifts.map((l: ILift) =>
-                        <small key={l.Id}>
-                            <div id={l.Id} className="d-flex justify-content-between my-2">
-                                <div>{l.Date}</div>
-                                <div>{l.Name}</div>
-                                <div>{l.Weight}</div>
-                                <div>{l.Set1 && l.Set1}</div>
-                                <div>{l.Set2 && l.Set2}</div>
-                                <div>{l.Set3 && l.Set3}</div>
-                                <div>{l.Set4 && l.Set4}</div>
-                                <div>{l.Set5 && l.Set5}</div>
-                            </div>
-                        </small>)}
+                <div className="row overflow-auto p-2 h-75">
+                    {liftHistoryQuery.status === 'pending' ? (
+                        <LoadingIndicator />
+                    ) : liftHistoryQuery.status === 'error' ? (
+                        <ErrorIndicator error={liftHistoryQuery.error.message} />
+                    ) : (
+                        <LiftHistoryTable lifts={liftHistoryQuery.data} />
+                    )}
                 </div>
             </div>
-            <div className="container-fluid pb-3" style={{ bottom: "0", position: "absolute" }}>
+            <div className="container-fluid py-3 border border-4 border-primary" style={{ bottom: "0", position: "absolute" }}>
                 <div className="row pb-3" >
                     <div className="col">
-                        <select onChange={(e) => setName(e.target.value)} className="form-control">
-                            {liftOptions.map((l: ILiftOption) =>
-                                <option key={l.Id} id={l.Id} value={l.Name}>{l.Name}</option>
-                            )}
-                        </select>
+                        <>
+                            <select onChange={(e) => setName(e.target.value)}
+                                className={`form-control ${liftOptionsQuery.status == "pending" ? "bg-warning" : liftOptionsQuery.status == "error" ? "text-danger" : ""}`}>
+                                {liftOptionsQuery.status === 'pending' ? (
+                                    <option value="">Getting lift options...</option>
+                                ) : liftOptionsQuery.status === 'error' ? (
+                                    <option value="">Something went wrong...</option>
+                                ) : (
+                                    liftOptionsQuery.data.map((l: ILiftOption) =>
+                                        <option key={l.Id} id={l.Id} value={l.Name}>{l.Name}</option>
+                                    )
+                                )}
+                            </select>
+                        </>
                     </div>
                 </div>
 
                 <div className="row">
                     <div className="col">
-                        <form onSubmit={(e) => addSets(e)}>
+                        <form onSubmit={(e) => AddSets(e)}>
                             <input name="name" value={Name} hidden onChange={() => { }}></input>
                             <div className="d-flex justify-content-between align-items-center">
                                 <div className={`btn ${kg20 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg20 == 0 ? setKg20(20) : setKg20(0)}><small>20kg</small></div>
@@ -170,15 +99,20 @@ export default function LiftSession() {
                                     <input type="number" style={liftInputStyle} id="Set5" name="Set5" value={Set5} onChange={(e) => setSet5(parseInt(e.target.value))} pattern="\d*" inputMode="numeric"></input>
                                 </div>
                             </div>
-                            <div className="d-flex justify-content-end">
-                                <button type="submit" className="btn btn-primary">Add Sets</button>
+                            <div className="">
+                                {userMsg ? <p className="bg-primary text-white text-center fw-bold p-3">{userMsg}</p>
+                                    :
+                                    <button type="submit" className="btn btn-primary w-100 p-3">Add Sets</button>
+                                }
                             </div>
                         </form>
                         {error && <p>{error}</p>}
-                        {userMsg && <p>{userMsg}</p>}
                     </div>
                 </div>
             </div >
+            {loading && <div>
+                <LoadingIndicatorFullScreen />
+            </div>}
         </>
     )
 }
