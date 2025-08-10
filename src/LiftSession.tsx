@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import ILift from "./interfaces/ILift.interface";
 import ILiftOption from "./interfaces/LiftOptions.interfaces";
 import { useQuery } from "@tanstack/react-query";
-import GetLiftsByName from "./data/GetLiftHistory";
+import GetLiftHistory from "./data/GetLiftHistory";
 import { ErrorIndicator, LoadingIndicator, LoadingIndicatorFullScreen } from "./components/StatusIndicators";
 import GetLiftOptions from "./data/GetLiftOptions";
 import useAddSets from "./hooks/useAddSet";
 import { inputgroup, liftInputStyle } from "./constants/constants";
+import LiftHistoryTable from "./components/LiftHistoryTable";
 
 export default function LiftSession() {
     const [error, setError] = useState<string>("");
@@ -20,7 +21,7 @@ export default function LiftSession() {
     const [kg5, setKg5] = useState<number>(0);
     const [kg2_5, setKg2_5] = useState<number>(0);
 
-    const liftHistoryQuery = useQuery<ILift[]>({ queryKey: ['liftHistory', Name], queryFn: () => GetLiftsByName(Name) })
+    const liftHistoryQuery = useQuery<ILift[]>({ queryKey: ['liftHistory', Name], queryFn: () => GetLiftHistory(Name) })
     const liftOptionsQuery = useQuery<ILiftOption[]>({ queryKey: ['liftOptions'], queryFn: GetLiftOptions })
     const { AddSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useAddSets(liftHistoryQuery, Name, setUserMsg, setError, loading, setLoading);
 
@@ -32,27 +33,13 @@ export default function LiftSession() {
     return (
         <>
             <div className="container-fluid py-0 px-2" style={{ height: "80vh" }}>
-                <div className="row overflow-scroll h-75">
+                <div className="row overflow-auto p-2 h-75">
                     {liftHistoryQuery.status === 'pending' ? (
                         <LoadingIndicator />
                     ) : liftHistoryQuery.status === 'error' ? (
                         <ErrorIndicator error={liftHistoryQuery.error.message} />
                     ) : (
-                        <>
-                            {liftHistoryQuery.data.map((l: ILift) =>
-                                <small key={l.Id}>
-                                    <div id={l.Id} className="d-flex justify-content-between my-2">
-                                        <div>{l.Date}</div>
-                                        <div>{l.Name}</div>
-                                        <div>{l.Weight}</div>
-                                        <div>{l.Set1 && l.Set1}</div>
-                                        <div>{l.Set2 && l.Set2}</div>
-                                        <div>{l.Set3 && l.Set3}</div>
-                                        <div>{l.Set4 && l.Set4}</div>
-                                        <div>{l.Set5 && l.Set5}</div>
-                                    </div>
-                                </small>)}
-                        </>
+                        <LiftHistoryTable lifts={liftHistoryQuery.data} />
                     )}
                 </div>
             </div>
