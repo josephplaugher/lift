@@ -1,4 +1,4 @@
-import ApiUrl from "../ApiUrl";
+import ApiUrl from "../utilities/ApiUrl";
 
 export default async function GetLiftHistory(liftName: string | undefined = ""): Promise<any> {
     const path = liftName ? `/api/lift/${liftName?.replace(" ", "_")}` : "/api/lift";

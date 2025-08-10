@@ -1,9 +1,9 @@
 import { FormEvent, useState } from "react";
-import ILiftOption from "./interfaces/LiftOptions.interfaces";
-import ApiUrl from "./ApiUrl";
+import ILiftOption from "../interfaces/LiftOptions.interfaces";
+import ApiUrl from "../utilities/ApiUrl";
 import { useQuery } from "@tanstack/react-query";
-import GetLiftOptions from "./data/GetLiftOptions";
-import { ErrorIndicator, LoadingIndicator } from "./components/StatusIndicators";
+import GetLiftOptions from "../data/GetLiftOptions";
+import { ErrorIndicator, LoadingIndicator } from "../components/StatusIndicators";
 
 export default function LiftOptions() {
     const [name, setName] = useState<string>("");
@@ -35,7 +35,7 @@ export default function LiftOptions() {
 
     return (
         <>
-            <div>
+            <div data-testid="options-list">
                 {liftOptionsQuery.status === 'pending' ? (
                     <LoadingIndicator />
                 ) : liftOptionsQuery.status === 'error' ? (
@@ -46,7 +46,7 @@ export default function LiftOptions() {
                     </>
                 )}
             </div>
-            <div>
+            <div data-testid="add-options">
                 <form onSubmit={(e) => addOption(e)}>
                     <input name="Name" value={name} onChange={(e) => setName(e.target.value)} required></input>
                     <button type="submit">Add</button>

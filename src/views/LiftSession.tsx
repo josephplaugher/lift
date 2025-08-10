@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import ILift from "./interfaces/ILift.interface";
-import ILiftOption from "./interfaces/LiftOptions.interfaces";
+import ILift from "../interfaces/ILift.interface";
+import ILiftOption from "../interfaces/LiftOptions.interfaces";
 import { useQuery } from "@tanstack/react-query";
-import GetLiftHistory from "./data/GetLiftHistory";
-import { ErrorIndicator, LoadingIndicator, LoadingIndicatorFullScreen } from "./components/StatusIndicators";
-import GetLiftOptions from "./data/GetLiftOptions";
-import useAddSets from "./hooks/useAddSet";
-import { inputgroup, liftInputStyle } from "./constants/constants";
-import LiftHistoryTable from "./components/LiftHistoryTable";
+import GetLiftHistory from "../data/GetLiftHistory";
+import { ErrorIndicator, LoadingIndicator, LoadingIndicatorFullScreen } from "../components/StatusIndicators";
+import GetLiftOptions from "../data/GetLiftOptions";
+import useAddSets from "../hooks/useAddSet";
+import { inputgroup, liftInputStyle } from "../constants/constants";
+import LiftHistoryTable from "../components/LiftHistoryTable";
 
 export default function LiftSession() {
     const [error, setError] = useState<string>("");
@@ -43,7 +43,7 @@ export default function LiftSession() {
                     )}
                 </div>
             </div>
-            <div className="container-fluid py-3 border border-4 border-primary" style={{ bottom: "0", position: "absolute" }}>
+            <div className="container-fluid py-3 border border-4 border-primary" style={{ bottom: "0", position: "absolute" }} data-testid="lift-session">
                 <div className="row pb-3" >
                     <div className="col">
                         <>

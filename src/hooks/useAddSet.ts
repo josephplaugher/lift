@@ -1,5 +1,5 @@
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
-import ApiUrl from "../ApiUrl";
+import ApiUrl from "../utilities/ApiUrl";
 
 export default function useAddSets(
     liftHistoryQuery: any, Name: string, 

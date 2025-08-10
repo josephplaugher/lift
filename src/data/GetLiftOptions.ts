@@ -1,4 +1,4 @@
-import ApiUrl from "../ApiUrl";
+import ApiUrl from "../utilities/ApiUrl";
 
 export default async function GetLiftOptions(): Promise<any> {
     const response: any = await fetch(`${ApiUrl()}/api/liftoption`, {
