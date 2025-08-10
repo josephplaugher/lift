@@ -1,4 +1,3 @@
-// __tests__/views.test.tsx
 import { render, screen, waitFor } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import Lift from "../src/views/Lift";
