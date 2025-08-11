@@ -8,6 +8,6 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom', // required for DOM testing
-    setupFiles: './setupTests.ts',
+    setupFiles: './setupTests.tsx',
   },
 })
