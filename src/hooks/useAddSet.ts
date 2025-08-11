@@ -1,8 +1,10 @@
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import ApiUrl from "../utilities/ApiUrl";
+import { UseQueryResult } from "@tanstack/react-query";
+import ILift from "../interfaces/ILift.interface";
 
 export default function useAddSets(
-    liftHistoryQuery: any, Name: string, 
+    liftHistoryQuery: UseQueryResult<ILift[]>, Name: string, 
     setUserMsg: React.Dispatch<SetStateAction<string>>,setError: Dispatch<SetStateAction<string>>,
     loading: boolean, setLoading: Dispatch<SetStateAction<boolean>>) {
     const [Weight, setWeight] = useState<number | string>(20);
