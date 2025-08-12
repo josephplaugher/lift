@@ -1,30 +1,14 @@
-# React + TypeScript + Vite
+# Lift 
+## React + TypeScript + Vite
+A simple and effective app designed for people who strength train to track their workouts and monitor progress. I designed it with powerlifters and weightlifters in mind, but it can be used to track any kind of strength training. The front end is built in react with typescript. The backend is built in [nestjs](https://nestjs.com/) with typescript.<br/>
+[Lift](https://github.com/josephplaugher/lift)<br/> 
+[Lift API](https://github.com/josephplaugher/liftapi)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## To run
+You will first need to download and run the API repo. That can be found (here)[https://github.com/josephplaugher/liftapi].
+Then...
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Download the repo. 
+npm i, or pnpm i, or yarn install.<br/>
+npm run dev, pnpm run dev, or yarn run dev.<br/>
+Update the .env with the correct url where you are running the API.
