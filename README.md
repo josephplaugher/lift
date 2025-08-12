@@ -5,7 +5,7 @@ A simple and effective app designed for people who strength train to track their
 [Lift API](https://github.com/josephplaugher/liftapi)
 
 ## To run
-You will first need to download and run the API repo. That can be found (here)[https://github.com/josephplaugher/liftapi].
+You will first need to download and run the API repo. That can be found [here](https://github.com/josephplaugher/liftapi).
 Then...
 
 Download the repo. 
