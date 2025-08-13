@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import './App.css'
-import Lift from './Lift'
+import Lift from './views/Lift'
 import {
   QueryClient,
   QueryClientProvider,

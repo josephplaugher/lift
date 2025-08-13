@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest --typecheck"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.84.1",
@@ -18,6 +19,8 @@
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.83.1",
+    "@testing-library/jest-dom": "^6.6.4",
+    "@testing-library/react": "^16.3.0",
     "@types/node": "^22.0.2",
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
@@ -27,7 +30,9 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
+    "jsdom": "^26.1.0",
     "typescript": "^5.2.2",
-    "vite": "^5.3.4"
+    "vite": "^5.3.4",
+    "vitest": "^3.2.4"
   }
 }

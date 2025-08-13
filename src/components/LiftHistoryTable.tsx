@@ -3,7 +3,7 @@ import ILift from "../interfaces/ILift.interface";
 export default function LiftHistoryTable(param: { lifts: ILift[] }) {
     return (
         <>
-            <table className="table">
+            <table className="table" data-testid="lift-history-table">
                 <thead>
                     <tr>
                         <th>Date</th>

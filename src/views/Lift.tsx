@@ -13,7 +13,7 @@ export default function Lift() {
     return (
         <>
             <div className="container-fluid p-0">
-                <div className="row">
+                <div className="row" data-testid="main-nav">
                     <div className="col p-0">
                         <button className={`btn btn-primary rounded-0 w-100 p-3 ${tab == ITabOptions.Lift ? "border-info" : "border-dark"}`} onClick={() => setTab(ITabOptions.Lift)}>
                             Lift Session
