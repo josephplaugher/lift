@@ -28,7 +28,7 @@ export default function LiftSession() {
     useEffect(() => {
         const w: number = ((kg20 + kg15 + kg10 + kg5 + kg2_5) * 2) + 20;
         setWeight(w)
-    }, [kg20, kg15, kg10, kg5, kg2_5])
+    }, [setWeight, kg20, kg15, kg10, kg5, kg2_5])
 
     return (
         <>
