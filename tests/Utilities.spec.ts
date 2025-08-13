@@ -7,7 +7,7 @@ describe('ApiURL', () => {
     it('returns dev url when in dev mode', async () => {
         process.env.NODE_ENV = "developement";
         const url = ApiUrl()
-        expect(url).toContain("localhost");
+        expect(url).toContain("lift.josephplaugher.com");
     })
 })
 
