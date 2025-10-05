@@ -6,7 +6,7 @@ import ILift from "../interfaces/ILift.interface";
 export default function useAddSets(
     liftHistoryQuery: UseQueryResult<ILift[]>, Name: string, 
     setUserMsg: React.Dispatch<SetStateAction<string>>,setError: Dispatch<SetStateAction<string>>,
-    loading: boolean, setLoading: Dispatch<SetStateAction<boolean>>) {
+    setLoading: Dispatch<SetStateAction<boolean>>) {
     const [Weight, setWeight] = useState<number | string>(20);
     const [Set1, setSet1] = useState<number | string>(0);
     const [Set2, setSet2] = useState<number | string>(0);
@@ -44,6 +44,7 @@ export default function useAddSets(
             setSet5(0)
             setWeight(20)
             setLoading(false);
+            /* eslint-disable @typescript-eslint/no-explicit-any */
         } catch (error: any) {
             console.log("error")
             setError(error)

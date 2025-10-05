@@ -23,7 +23,7 @@ export default function LiftSession() {
 
     const liftHistoryQuery = useQuery<ILift[]>({ queryKey: ['liftHistory', Name], queryFn: () => GetLiftHistory(Name) })
     const liftOptionsQuery = useQuery<ILiftOption[]>({ queryKey: ['liftOptions'], queryFn: GetLiftOptions })
-    const { AddSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useAddSets(liftHistoryQuery, Name, setUserMsg, setError, loading, setLoading);
+    const { AddSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useAddSets(liftHistoryQuery, Name, setUserMsg, setError, setLoading);
 
     useEffect(() => {
         const w: number = ((kg20 + kg15 + kg10 + kg5 + kg2_5) * 2) + 20;
