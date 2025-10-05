@@ -27,6 +27,7 @@ export default function LiftOptions() {
             setUserMsg("Lift option added")
             setName("");
             setTimeout(() => setUserMsg(""), 5000)
+            /* eslint-disable @typescript-eslint/no-explicit-any */
         } catch (error: any) {
             console.log("error")
             setError(error)

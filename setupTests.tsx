@@ -22,6 +22,7 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: vi.fn(),
   })),
 })
+/* eslint-disable @typescript-eslint/no-explicit-any */
 global.fetch = vi.fn() as any
 
 // Create a reusable QueryClient for tests
