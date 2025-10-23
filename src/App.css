@@ -46,3 +46,9 @@ input[type='number'] {
   border-width: 1rem; /* Thickness */
   color: #007bff;    /* Spinner color */
 }
+
+.toggle-btn {
+  position: absolute;
+  top: 20;
+  right: 5;
+}
