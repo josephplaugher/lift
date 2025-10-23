@@ -8,6 +8,8 @@ import GetLiftOptions from "../data/GetLiftOptions";
 import useAddSets from "../hooks/useAddSet";
 import { inputgroup, liftInputStyle } from "../constants/constants";
 import LiftHistoryTable from "../components/LiftHistoryTable";
+import { EUnits } from "../interfaces/IUnits.enum";
+import ConvertUnits from "../utilities/ConvertUnits";
 
 export default function LiftSession() {
     const [error, setError] = useState<string>("");
@@ -15,31 +17,36 @@ export default function LiftSession() {
     const [userMsg, setUserMsg] = useState<string>("");
     const [Name, setName] = useState<string>("Deadlift");
 
+    const [kg202, setKg202] = useState<number>(0);
     const [kg20, setKg20] = useState<number>(0);
     const [kg15, setKg15] = useState<number>(0);
     const [kg10, setKg10] = useState<number>(0);
     const [kg5, setKg5] = useState<number>(0);
     const [kg2_5, setKg2_5] = useState<number>(0);
+    const [units, setUnits] = useState<EUnits>(EUnits.Kg);
 
     const liftHistoryQuery = useQuery<ILift[]>({ queryKey: ['liftHistory', Name], queryFn: () => GetLiftHistory(Name) })
     const liftOptionsQuery = useQuery<ILiftOption[]>({ queryKey: ['liftOptions'], queryFn: GetLiftOptions })
     const { AddSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useAddSets(liftHistoryQuery, Name, setUserMsg, setError, setLoading);
 
     useEffect(() => {
-        const w: number = ((kg20 + kg15 + kg10 + kg5 + kg2_5) * 2) + 20;
+        const w: number = ((kg202 + kg20 + kg15 + kg10 + kg5 + kg2_5) * 2) + 20;
         setWeight(w)
-    }, [setWeight, kg20, kg15, kg10, kg5, kg2_5])
+    }, [setWeight, kg202, kg20, kg15, kg10, kg5, kg2_5])
 
     return (
         <>
             <div className="container-fluid py-0 px-2" style={{ height: "80vh" }}>
+                <button className="toggle-btn btn btn-secondary p-2" onClick={() => { units == EUnits.Kg ? setUnits(EUnits.Lbs) : setUnits(EUnits.Kg) }}>
+                    {units}
+                </button>
                 <div className="row overflow-auto p-2 h-75">
                     {liftHistoryQuery.status === 'pending' ? (
                         <LoadingIndicator />
                     ) : liftHistoryQuery.status === 'error' ? (
                         <ErrorIndicator error={liftHistoryQuery.error.message} />
                     ) : (
-                        <LiftHistoryTable lifts={liftHistoryQuery.data} />
+                        <LiftHistoryTable lifts={liftHistoryQuery.data} units={units}/>
                     )}
                 </div>
             </div>
@@ -68,13 +75,15 @@ export default function LiftSession() {
                         <form onSubmit={(e) => AddSets(e)}>
                             <input name="name" value={Name} hidden onChange={() => { }}></input>
                             <div className="d-flex justify-content-between align-items-center">
-                                <div className={`btn ${kg20 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg20 == 0 ? setKg20(20) : setKg20(0)}><small>20kg</small></div>
-                                <div className={`btn ${kg15 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg15 == 0 ? setKg15(15) : setKg15(0)}><small>15kg</small></div>
-                                <div className={`btn ${kg10 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg10 == 0 ? setKg10(10) : setKg10(0)}><small>10kg</small></div>
-                                <div className={`btn ${kg5 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg5 == 0 ? setKg5(5) : setKg5(0)}><small>5kg</small></div>
-                                <div className={`btn ${kg2_5 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg2_5 == 0 ? setKg2_5(2.5) : setKg2_5(0)}><small>2.5kg</small></div>
+                                <div className={`btn ${kg202 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg202 == 0 ? setKg202(20) : setKg202(0)}><small>{ConvertUnits(units, 20)}</small></div>
+                                <div className={`btn ${kg20 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg20 == 0 ? setKg20(20) : setKg20(0)}><small>{ConvertUnits(units, 20)}</small></div>
+                                <div className={`btn ${kg15 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg15 == 0 ? setKg15(15) : setKg15(0)}><small>{ConvertUnits(units, 15)}</small></div>
+                                <div className={`btn ${kg10 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg10 == 0 ? setKg10(10) : setKg10(0)}><small>{ConvertUnits(units, 10)}</small></div>
+                                <div className={`btn ${kg5 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg5 == 0 ? setKg5(5) : setKg5(0)}><small>{ConvertUnits(units, 5)}</small></div>
+                                <div className={`btn ${kg2_5 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg2_5 == 0 ? setKg2_5(2.5) : setKg2_5(0)}><small>{ConvertUnits(units, 2.5)}</small></div>
                                 <div style={inputgroup}>
-                                    <input type="number" style={liftInputStyle} name="Weight" placeholder="Weight" value={Weight} readOnly></input>
+                                    <input type="number" style={liftInputStyle} name="Weight" placeholder="Weight"
+                                        value={ConvertUnits(units, Number(Weight))} readOnly></input>
                                 </div>
                             </div>
                             <div className="d-flex justify-content-between py-3">

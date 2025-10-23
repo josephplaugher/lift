@@ -1,6 +1,8 @@
 import ILift from "../interfaces/ILift.interface";
+import { EUnits } from "../interfaces/IUnits.enum";
+import ConvertUnits from "../utilities/ConvertUnits";
 
-export default function LiftHistoryTable(param: { lifts: ILift[] }) {
+export default function LiftHistoryTable(param: { lifts: ILift[], units: EUnits }) {
     return (
         <>
             <table className="table" data-testid="lift-history-table">
@@ -8,7 +10,7 @@ export default function LiftHistoryTable(param: { lifts: ILift[] }) {
                     <tr>
                         <th>Date</th>
                         <th>Lift</th>
-                        <th>KG</th>
+                        <th>{param.units == EUnits.Kg ? "Kg" : "Lbs"}</th>
                         <th>Sets</th>
                     </tr>
                 </thead>
@@ -19,7 +21,7 @@ export default function LiftHistoryTable(param: { lifts: ILift[] }) {
                                 <tr key={l.Id} id={l.Id}>
                                     <td>{l.Date}</td>
                                     <td>{l.Name}</td>
-                                    <td>{l.Weight}</td>
+                                    <td>{ConvertUnits(param.units, l.Weight)}</td>
                                     <td>{l.Set1 && l.Set1},
                                         {l.Set2 && l.Set2},
                                         {l.Set3 && l.Set3},
