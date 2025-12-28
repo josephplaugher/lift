@@ -6,3 +6,4 @@ export const liftInputStyle: React.CSSProperties = {
     width: "60px"
 };
 
+export const LIFT_USER = 'liftUser';

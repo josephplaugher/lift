@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import './App.css'
 import Lift from './views/Lift'
 import {
@@ -6,23 +5,36 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import Auth from './views/Auth'
+import { useAuth0 } from '@auth0/auth0-react'
+import { useEffect } from 'react'
+import useAuth from './hooks/useAuth'
 
 const queryClient = new QueryClient();
 
 function App() {
-  const [authorized] = useState<boolean>(true)
+  const { error, user, isAuthenticated, isLoading } = useAuth();
 
+  useEffect(()=> {
+    console.log(user)
+  },[user, isAuthenticated, isLoading])
   return (
     <QueryClientProvider client={queryClient}>
-      {!authorized &&
-        <div>
-          <p>to do: setup login</p>
-        </div>
-      }
-      {authorized &&
-        <Lift />
-      }
-      <ReactQueryDevtools initialIsOpen={false} buttonPosition='bottom-left' position='bottom'/>
+        {error &&
+          <div className="app-container">
+            <div className="error-state">
+              <div className="error-title">Oops!</div>
+              <div className="error-message">Something went wrong</div>
+              <div className="error-sub-message">{error?.message}</div>
+            </div>
+          </div>
+        }
+        {isLoading && <div>Loading...</div>}
+        {user && isAuthenticated && !isLoading ?
+          <Lift />
+          :
+          <Auth />}
+      <ReactQueryDevtools initialIsOpen={false} buttonPosition='bottom-left' position='bottom' />
     </QueryClientProvider>
   )
 }

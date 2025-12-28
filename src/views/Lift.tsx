@@ -2,11 +2,13 @@ import { useState } from "react";
 import LiftSession from "./LiftSession";
 import LiftHistory from "./LiftHistory";
 import LiftOptions from "./LiftOptions";
+import User from "./User";
 
 enum ITabOptions {
     Lift = "Lift",
     LiftHistory = "LiftHistory",
-    LiftOptions = "LiftOpions"
+    LiftOptions = "LiftOpions",
+    Me = "Me"
 }
 export default function Lift() {
     const [tab, setTab] = useState<ITabOptions>(ITabOptions.Lift)
@@ -16,17 +18,22 @@ export default function Lift() {
                 <div className="row" data-testid="main-nav">
                     <div className="col p-0">
                         <button className={`btn btn-primary rounded-0 w-100 p-3 ${tab == ITabOptions.Lift ? "border-info" : "border-dark"}`} onClick={() => setTab(ITabOptions.Lift)}>
-                            Lift Session
+                            Lift
                         </button>
                     </div>
                     <div className="col p-0">
                         <button className={`btn btn-primary rounded-0 w-100 p-3 ${tab == ITabOptions.LiftOptions ? "border-info" : "border-dark"}`} onClick={() => setTab(ITabOptions.LiftOptions)}>
-                            Lift Options
+                            Options
                         </button>
                     </div>
                     <div className="col p-0">
                         <button className={`btn btn-primary rounded-0 w-100 p-3 ${tab == ITabOptions.LiftHistory ? "border-info" : "border-dark"}`} onClick={() => setTab(ITabOptions.LiftHistory)}>
-                            Lift History
+                            History
+                        </button>
+                    </div>
+                    <div className="col p-0">
+                        <button className={`btn btn-primary rounded-0 w-100 p-3 ${tab == ITabOptions.Me ? "border-info" : "border-dark"}`} onClick={() => setTab(ITabOptions.Me)}>
+                            Me
                         </button>
                     </div>
                 </div>
@@ -35,6 +42,7 @@ export default function Lift() {
                 {tab == ITabOptions.Lift && <LiftSession />}
                 {tab == ITabOptions.LiftHistory && <LiftHistory />}
                 {tab == ITabOptions.LiftOptions && <LiftOptions />}
+                {tab == ITabOptions.Me && <User />}
             </div>
         </>
     )
