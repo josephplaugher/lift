@@ -16,12 +16,15 @@ export default function useAuth(): any {
                         },
                     });
                     console.log('Access token acquired', token);
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+console.log("payload: ",payload);
+
                 } catch (error: any) {
                     console.log('Silent token aqcuisition failed', error);
                 }
 
                 try {
-                    const resp = await fetch(`${ApiUrl()}/api/auth`, {
+                    const resp = await fetch(`${ApiUrl()}/api/auth/protected`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
