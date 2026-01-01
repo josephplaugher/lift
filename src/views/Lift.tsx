@@ -2,7 +2,8 @@ import { useState } from "react";
 import LiftSession from "./LiftSession";
 import LiftHistory from "./LiftHistory";
 import LiftOptions from "./LiftOptions";
-import User from "./User";
+import UserProfile from "./UserProfile";
+import { User } from "@auth0/auth0-react";
 
 enum ITabOptions {
     Lift = "Lift",
@@ -10,7 +11,11 @@ enum ITabOptions {
     LiftOptions = "LiftOpions",
     Me = "Me"
 }
-export default function Lift() {
+
+type TLiftParams = {
+    user: User
+} 
+export default function Lift({user}: TLiftParams) {
     const [tab, setTab] = useState<ITabOptions>(ITabOptions.Lift)
     return (
         <>
@@ -42,7 +47,7 @@ export default function Lift() {
                 {tab == ITabOptions.Lift && <LiftSession />}
                 {tab == ITabOptions.LiftHistory && <LiftHistory />}
                 {tab == ITabOptions.LiftOptions && <LiftOptions />}
-                {tab == ITabOptions.Me && <User />}
+                {tab == ITabOptions.Me && <UserProfile user={user} />}
             </div>
         </>
     )

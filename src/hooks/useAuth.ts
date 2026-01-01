@@ -7,7 +7,7 @@ export default function useAuth(): any {
 
     useEffect(() => {
         if (!isLoading && isAuthenticated) {
-            (async function() {
+            (async function () {
                 let token;
                 try {
                     token = await getAccessTokenSilently({
@@ -15,16 +15,12 @@ export default function useAuth(): any {
                             audience: ApiUrl(),
                         },
                     });
-                    console.log('Access token acquired', token);
-                    const payload = JSON.parse(atob(token.split('.')[1]));
-console.log("payload: ",payload);
-
                 } catch (error: any) {
                     console.log('Silent token aqcuisition failed', error);
                 }
 
                 try {
-                    const resp = await fetch(`${ApiUrl()}/api/auth/protected`, {
+                    const resp = await fetch(`${ApiUrl()}/api/auth`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },

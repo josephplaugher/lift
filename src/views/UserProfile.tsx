@@ -1,11 +1,14 @@
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAuth0, User } from '@auth0/auth0-react';
 
 interface AuthProps {
 
 }
 
-export default function User() {
-    const { logout, user } = useAuth0()
+type TProfileParams = {
+    user: User
+} 
+export default function UserProfile({user}: TProfileParams) {
+    const { logout } = useAuth0()
     return (
         <div className='row'>
             <div className="col d-flex flex-column mt-5 justify-content-between align-items-center text-center">
