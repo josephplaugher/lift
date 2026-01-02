@@ -6,7 +6,6 @@ import {
 } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import Auth from './views/Auth'
-import { useAuth0 } from '@auth0/auth0-react'
 import { useEffect } from 'react'
 import useAuth from './hooks/useAuth'
 import { LoadingIndicator } from './components/StatusIndicators'
@@ -15,10 +14,6 @@ const queryClient = new QueryClient();
 
 function App() {
   const { error, user, isAuthenticated, isLoading } = useAuth();
-
-  useEffect(()=> {
-    console.log(user)
-  },[user, isAuthenticated, isLoading])
 
   return (
     <QueryClientProvider client={queryClient}>

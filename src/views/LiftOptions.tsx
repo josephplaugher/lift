@@ -4,12 +4,14 @@ import ApiUrl from "../utilities/ApiUrl";
 import { useQuery } from "@tanstack/react-query";
 import GetLiftOptions from "../data/GetLiftOptions";
 import { ErrorIndicator, LoadingIndicator } from "../components/StatusIndicators";
+import useGetToken from "../hooks/useGetToken";
 
 export default function LiftOptions() {
     const [name, setName] = useState<string>("");
     const [error, setError] = useState<string>("");
     const [userMsg, setUserMsg] = useState<string>("");
-    const liftOptionsQuery = useQuery<ILiftOption[]>({ queryKey: ['liftOptions'], queryFn: GetLiftOptions })
+    const token = useGetToken();
+    const liftOptionsQuery = useQuery<ILiftOption[]>({enabled: token != "", queryKey: ['liftOptions'], queryFn: () => GetLiftOptions(token) })
 
     async function addOption(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();

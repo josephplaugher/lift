@@ -2,11 +2,13 @@ import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import ApiUrl from "../utilities/ApiUrl";
 import { UseQueryResult } from "@tanstack/react-query";
 import ILift from "../interfaces/ILift.interface";
+import useGetToken from "./useGetToken";
 
 export default function useAddSets(
-    liftHistoryQuery: UseQueryResult<ILift[]>, Name: string, 
-    setUserMsg: React.Dispatch<SetStateAction<string>>,setError: Dispatch<SetStateAction<string>>,
+    liftHistoryQuery: UseQueryResult<ILift[]>, Name: string,
+    setUserMsg: React.Dispatch<SetStateAction<string>>, setError: Dispatch<SetStateAction<string>>,
     setLoading: Dispatch<SetStateAction<boolean>>) {
+    const token = useGetToken();
     const [Weight, setWeight] = useState<number | string>(20);
     const [Set1, setSet1] = useState<number | string>(0);
     const [Set2, setSet2] = useState<number | string>(0);
@@ -29,6 +31,7 @@ export default function useAddSets(
                     Set5
                 }),
                 headers: {
+                    Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
                     Accept: "application/json",
                 },

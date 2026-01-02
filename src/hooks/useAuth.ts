@@ -20,15 +20,11 @@ export default function useAuth(): any {
                 }
 
                 try {
-                    const resp = await fetch(`${ApiUrl()}/api/auth`, {
+                    await fetch(`${ApiUrl()}/api/auth`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
                     });
-                    if (!resp.ok) throw new Error("auth response error");
-                    const data = await resp.json();
-                    console.log('auth response', data);
-
                 } catch (e) {
                     console.error('Failed to get token', e);
                 }

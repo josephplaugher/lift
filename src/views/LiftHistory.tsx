@@ -5,11 +5,12 @@ import GetLiftHistory from "../data/GetLiftHistory";
 import { ErrorIndicator, LoadingIndicator } from "../components/StatusIndicators";
 import { useState } from "react";
 import { EUnits } from "../interfaces/IUnits.enum";
+import useGetToken from "../hooks/useGetToken";
 
 export default function LiftHistory() {
     const [units, setUnits] = useState<EUnits>(EUnits.Kg);
-
-    const liftHistoryQuery = useQuery<ILift[]>({ queryKey: ['liftHistory', "all"], queryFn: () => GetLiftHistory() })
+    const token = useGetToken();
+    const liftHistoryQuery = useQuery<ILift[]>({ enabled: token != "", queryKey: ['liftHistory', "all"], queryFn: () => GetLiftHistory(token) })
 
     return (
         <div className="container-fluid py-0 px-2" style={{ height: "90vh" }} data-testid="lift-history">

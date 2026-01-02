@@ -10,8 +10,10 @@ import { inputgroup, liftInputStyle } from "../constants/constants";
 import LiftHistoryTable from "../components/LiftHistoryTable";
 import { EUnits } from "../interfaces/IUnits.enum";
 import ConvertUnits from "../utilities/ConvertUnits";
+import useGetToken from "../hooks/useGetToken";
 
 export default function LiftSession() {
+    const token = useGetToken();
     const [error, setError] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const [userMsg, setUserMsg] = useState<string>("");
@@ -25,8 +27,8 @@ export default function LiftSession() {
     const [kg2_5, setKg2_5] = useState<number>(0);
     const [units, setUnits] = useState<EUnits>(EUnits.Kg);
 
-    const liftHistoryQuery = useQuery<ILift[]>({ queryKey: ['liftHistory', Name], queryFn: () => GetLiftHistory(Name) })
-    const liftOptionsQuery = useQuery<ILiftOption[]>({ queryKey: ['liftOptions'], queryFn: GetLiftOptions })
+    const liftHistoryQuery = useQuery<ILift[]>({ enabled: token != "", queryKey: ['liftHistory', Name], queryFn: () => GetLiftHistory(token, Name) })
+    const liftOptionsQuery = useQuery<ILiftOption[]>({ enabled: token != "", queryKey: ['liftOptions'], queryFn: () => GetLiftOptions(token) })
     const { AddSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useAddSets(liftHistoryQuery, Name, setUserMsg, setError, setLoading);
 
     useEffect(() => {
@@ -46,7 +48,7 @@ export default function LiftSession() {
                     ) : liftHistoryQuery.status === 'error' ? (
                         <ErrorIndicator error={liftHistoryQuery.error.message} />
                     ) : (
-                        <LiftHistoryTable lifts={liftHistoryQuery.data} units={units}/>
+                        <LiftHistoryTable lifts={liftHistoryQuery.data} units={units} />
                     )}
                 </div>
             </div>
