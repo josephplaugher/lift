@@ -2,6 +2,9 @@ import { useEffect } from "react";
 import ApiUrl from "../utilities/ApiUrl";
 import { useAuth0 } from "@auth0/auth0-react";
 
+// type TUserdData = {
+    
+// }
 export default function useAuth(): any {
     const { error, user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
 
@@ -20,7 +23,7 @@ export default function useAuth(): any {
                 }
 
                 try {
-                    await fetch(`${ApiUrl()}/api/auth`, {
+                    const userData = await fetch(`${ApiUrl()}/api/auth`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },

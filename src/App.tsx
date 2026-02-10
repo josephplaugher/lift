@@ -1,11 +1,11 @@
 import './App.css'
-import Lift from './views/Lift'
+import Authenticated from './views/Authenticated'
 import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import Auth from './views/Auth'
+import UnAuthenticated from './views/UnAuthenticated'
 import { useEffect } from 'react'
 import useAuth from './hooks/useAuth'
 import { LoadingIndicator } from './components/StatusIndicators'
@@ -22,14 +22,15 @@ function App() {
             <div className="error-state">
               <div className="error-title">Oops!</div>
               <div className="error-message">Something went wrong. Let's try that again...</div>
+              <div className="error-message">{error.message}</div>
             </div>
           </div>
         }
         {isLoading && <LoadingIndicator />}
         {user && isAuthenticated && !isLoading ?
-          <Lift user={user} />
+          <Authenticated user={user} />
           :
-          <Auth />}
+          <UnAuthenticated />}
       <ReactQueryDevtools initialIsOpen={false} buttonPosition='bottom-left' position='bottom' />
     </QueryClientProvider>
   )

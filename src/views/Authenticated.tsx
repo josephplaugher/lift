@@ -4,6 +4,8 @@ import LiftHistory from "./LiftHistory";
 import LiftOptions from "./LiftOptions";
 import UserProfile from "./UserProfile";
 import { User } from "@auth0/auth0-react";
+// import Payment from "./Payment";
+import usePayment from "../hooks/usePayment";
 
 enum ITabOptions {
     Lift = "Lift",
@@ -15,8 +17,8 @@ enum ITabOptions {
 type TLiftParams = {
     user: User
 } 
-export default function Lift({user}: TLiftParams) {
-    const [tab, setTab] = useState<ITabOptions>(ITabOptions.Lift)
+export default function Authenticated({user}: TLiftParams) {
+    const [tab, setTab] = useState<ITabOptions>(ITabOptions.Me)
     return (
         <>
             <div className="container-fluid p-0">
