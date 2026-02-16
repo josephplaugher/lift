@@ -3,9 +3,9 @@ import LiftSession from "./LiftSession";
 import LiftHistory from "./LiftHistory";
 import LiftOptions from "./LiftOptions";
 import UserProfile from "./UserProfile";
-import { User } from "@auth0/auth0-react";
-// import Payment from "./Payment";
+import { useAuth0, User } from "@auth0/auth0-react";
 import usePayment from "../hooks/usePayment";
+import { ESubscriptionStatusEnum } from "../interfaces/ISubscriptionStatus.enum";
 
 enum ITabOptions {
     Lift = "Lift",
@@ -16,10 +16,13 @@ enum ITabOptions {
 
 type TLiftParams = {
     user: User
-} 
-export default function Authenticated({user}: TLiftParams) {
-    const [tab, setTab] = useState<ITabOptions>(ITabOptions.Me)
-    return (
+}
+export default function Authenticated({ user }: TLiftParams) {
+    const [tab, setTab] = useState<ITabOptions>(ITabOptions.Lift)
+    const { logout } = useAuth0()
+    const { subscribe, paid } = usePayment(user.sub!);
+
+    if (paid == ESubscriptionStatusEnum.Active || paid == ESubscriptionStatusEnum.Trialing) return (
         <>
             <div className="container-fluid p-0">
                 <div className="row" data-testid="main-nav">
@@ -49,8 +52,9 @@ export default function Authenticated({user}: TLiftParams) {
                 {tab == ITabOptions.Lift && <LiftSession />}
                 {tab == ITabOptions.LiftHistory && <LiftHistory />}
                 {tab == ITabOptions.LiftOptions && <LiftOptions />}
-                {tab == ITabOptions.Me && <UserProfile user={user} />}
+                {tab == ITabOptions.Me && <UserProfile user={user} logout={logout} subscribe={subscribe} paid={paid} />}
             </div>
         </>
     )
+    if (paid == ESubscriptionStatusEnum.PastDue) return <UserProfile user={user} logout={logout} subscribe={subscribe} paid={paid} />
 }
