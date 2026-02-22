@@ -56,5 +56,5 @@ export default function Authenticated({ user }: TLiftParams) {
             </div>
         </>
     )
-    if (paid == ESubscriptionStatusEnum.PastDue) return <UserProfile user={user} logout={logout} subscribe={subscribe} paid={paid} />
+    if (paid == ESubscriptionStatusEnum.PastDue || paid == null) return <UserProfile user={user} logout={logout} subscribe={subscribe} paid={paid} />
 }
