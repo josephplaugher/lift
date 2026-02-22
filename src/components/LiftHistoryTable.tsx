@@ -19,7 +19,7 @@ export default function LiftHistoryTable(param: { lifts: ILift[], units: EUnits 
                         <>
                             {param.lifts.map((l: ILift) =>
                                 <tr key={l.Id} id={l.Id}>
-                                    <td>{l.Date}</td>
+                                    <td>{l.Date.split("T")[0]}</td>
                                     <td>{l.Name}</td>
                                     <td>{ConvertUnits(param.units, l.Weight)}</td>
                                     <td>{l.Set1 && l.Set1},

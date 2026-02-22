@@ -15,22 +15,26 @@ const queryClient = new QueryClient();
 function App() {
   const { error, user, isAuthenticated, isLoading } = useAuth();
 
+  useEffect(() => {
+    console.log("check",error, user, isAuthenticated, isLoading )
+  }, [error, user, isAuthenticated, isLoading])
+
   return (
     <QueryClientProvider client={queryClient}>
-        {error &&
-          <div className="app-container">
-            <div className="error-state">
-              <div className="error-title">Oops!</div>
-              <div className="error-message">Something went wrong. Let's try that again...</div>
-              <div className="error-message">{error.message}</div>
-            </div>
+      {error &&
+        <div className="app-container">
+          <div className="error-state">
+            <div className="error-title">Oops!</div>
+            <div className="error-message">Something went wrong. Let's try that again...</div>
+            <div className="error-message">{error.message}</div>
           </div>
-        }
-        {isLoading && <LoadingIndicator />}
-        {user && isAuthenticated && !isLoading ?
-          <Authenticated user={user} />
-          :
-          <UnAuthenticated />}
+        </div>
+      }
+      {isLoading && <LoadingIndicator />}
+      {user && isAuthenticated && !isLoading ?
+        <Authenticated user={user} />
+        :
+        <UnAuthenticated />}
       <ReactQueryDevtools initialIsOpen={false} buttonPosition='bottom-left' position='bottom' />
     </QueryClientProvider>
   )
