@@ -12,6 +12,7 @@ export default function usePayment(userId: string) {
 
     useEffect(() => {
         verifyPaymentStatus(userId);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     async function verifyPaymentStatus(userId: string) {

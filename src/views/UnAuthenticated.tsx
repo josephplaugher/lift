@@ -1,9 +1,5 @@
 import { useAuth0 } from '@auth0/auth0-react';
 
-interface AuthProps {
-
-}
-
 export default function UnAuthenticated() {
     const { loginWithRedirect } = useAuth0()
     return (

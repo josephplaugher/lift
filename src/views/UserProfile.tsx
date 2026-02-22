@@ -1,11 +1,5 @@
 import { User } from '@auth0/auth0-react';
-import useGetToken from '../hooks/useGetToken';
 import { ESubscriptionStatusEnum } from '../interfaces/ISubscriptionStatus.enum';
-
-
-interface AuthProps {
-
-}
 
 type TProfileParams = {
     user: User;
@@ -14,8 +8,6 @@ type TProfileParams = {
     paid: ESubscriptionStatusEnum | null;
 }
 export default function UserProfile({ user, logout, subscribe, paid }: TProfileParams) {
-
-    console.log("name",user)
     return (
         <div className='row'>
             <div className="col d-flex flex-column mt-5 justify-content-between align-items-center text-center">

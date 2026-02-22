@@ -47,7 +47,7 @@ export default function useAddSets(
             setSet5(0)
             setWeight(20)
             setLoading(false);
-            /* eslint-disable @typescript-eslint/no-explicit-any */
+             
         } catch (error: any) {
             console.log("error")
             setError(error)
