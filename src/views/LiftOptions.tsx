@@ -20,6 +20,7 @@ export default function LiftOptions() {
             await fetch(`${ApiUrl()}/api/liftoption`, {
                 body: JSON.stringify({ Name: name }),
                 headers: {
+                    Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
                     Accept: "application/json",
                 },
