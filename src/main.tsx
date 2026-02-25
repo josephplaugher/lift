@@ -5,6 +5,9 @@ import './index.css'
 import 'bootstrap/dist/css/bootstrap.css';
 import { Auth0Provider } from '@auth0/auth0-react'
 
+console.log("apiurlprod")
+console.log(import.meta.env.VITE_API_URL_PROD)
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Auth0Provider
