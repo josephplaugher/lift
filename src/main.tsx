@@ -22,7 +22,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       cacheLocation="localstorage"
       authorizationParams={{
         redirect_uri: import.meta.env.VITE_AUTH0_REDIRECT_URI,
-        scope: 'openid profile email',
+        scope: 'openid profile email read:users',
         audience: import.meta.env.VITE_API_URL_PROD || import.meta.env.VITE_API_URL_DEV
       }}
       useRefreshTokens={true}
