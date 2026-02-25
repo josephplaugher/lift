@@ -27,8 +27,6 @@ export default function usePayment(userId: string) {
             }
         })
         const isPaid = await result.json();
-        console.log("result, ", result)
-        console.log("ispaid: ", isPaid)
         setStatus(isPaid.status);
     }
 

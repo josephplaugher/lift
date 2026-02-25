@@ -5,15 +5,6 @@ import './index.css'
 import 'bootstrap/dist/css/bootstrap.css';
 import { Auth0Provider } from '@auth0/auth0-react'
 
-console.log("apiurlprod")
-console.log(import.meta.env.VITE_API_URL_PROD)
-console.log("redirecturl")
-console.log(import.meta.env.VITE_AUTH0_REDIRECT_URI)
-console.log("domain")
-console.log(import.meta.env.VITE_AUTH0_DOMAIN)
-console.log("clientid")
-console.log(import.meta.env.VITE_AUTH0_CLIENT_ID)
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Auth0Provider
