@@ -11,7 +11,13 @@ export default function UnAuthenticated() {
                         scope: 'openid profile email offline_access'
                     }
                 })}>Sign In</button>
-            <button className="btn btn-primary align-self-center" >Sign Up</button>
+            <button className="btn btn-primary align-self-center"
+                onClick={() => loginWithRedirect({
+                    authorizationParams: {
+                        screen_hint: "signup",
+                        scope: 'openid profile email offline_access'
+                    }
+                })}>Sign Up</button>
         </div>
     );
 }

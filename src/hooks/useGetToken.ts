@@ -7,12 +7,16 @@ export default function useGetToken() {
     const [token, setToken] = useState<string>("");
     useEffect(() => {
         (async function () {
-            const token = await getAccessTokenSilently({
-                authorizationParams: {
-                    audience: ApiUrl(),
-                },
-            });
-            setToken(token);
+            try {
+                const token = await getAccessTokenSilently({
+                    authorizationParams: {
+                        audience: ApiUrl(),
+                    },
+                });
+                setToken(token);
+            } catch (error: any) {
+                console.log(error);
+            }
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
