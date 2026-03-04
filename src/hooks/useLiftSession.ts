@@ -1,0 +1,120 @@
+import { FormEvent, useEffect, useState } from "react";
+import ILift from "../interfaces/ILift.interface";
+import ILiftOption from "../interfaces/LiftOptions.interfaces";
+import { useQuery } from "@tanstack/react-query";
+import GetLiftHistory from "../data/GetLiftHistory";
+import { ErrorIndicator, LoadingIndicator, LoadingIndicatorFullScreen } from "../components/StatusIndicators";
+import GetLiftOptions from "../data/GetLiftOptions";
+import useAddSets from "../hooks/useAddSet";
+import { inputgroup, liftInputStyle } from "../constants/constants";
+import LiftHistoryTable from "../components/LiftHistoryTable";
+import { EUnits } from "../interfaces/IUnits.enum";
+import ConvertUnits from "../utilities/ConvertUnits";
+import useGetToken from "../hooks/useGetToken";
+import ApiUrl from "../utilities/ApiUrl";
+import { setegid } from "process";
+
+export default function useLiftSession() {
+    const token = useGetToken();
+    const [error, setError] = useState<string>("");
+    const [loading, setLoading] = useState<boolean>(false);
+    const [userMsg, setUserMsg] = useState<string>("");
+    const [Name, setName] = useState<string>("Deadlift");
+
+    const [kg202, setKg202] = useState<number>(0);
+    const [kg20, setKg20] = useState<number>(0);
+    const [kg15, setKg15] = useState<number>(0);
+    const [kg10, setKg10] = useState<number>(0);
+    const [kg5, setKg5] = useState<number>(0);
+    const [kg2_5, setKg2_5] = useState<number>(0);
+    const [units, setUnits] = useState<EUnits>(EUnits.Kg);
+    const [editing, setEditing] = useState<boolean>(false);
+    const [selectedSet, setSelectedSet] = useState<ILift>({
+        Name: '',
+        Weight: 0,
+        Date: '',
+        Set1: 0,
+    });
+
+
+    const liftHistoryQuery = useQuery<ILift[]>({ enabled: token != "", queryKey: ['liftHistory', Name], queryFn: () => GetLiftHistory(token, Name) })
+    const liftOptionsQuery = useQuery<ILiftOption[]>({ enabled: token != "", queryKey: ['liftOptions'], queryFn: () => GetLiftOptions(token) })
+    const { AddSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useAddSets(liftHistoryQuery, Name, setUserMsg, setError, setLoading, selectedSet);
+
+    useEffect(() => {
+        const w: number = ((kg202 + kg20 + kg15 + kg10 + kg5 + kg2_5) * 2) + 20;
+        setWeight(w)
+    }, [setWeight, kg202, kg20, kg15, kg10, kg5, kg2_5])
+
+    async function updateLiftSet(e: FormEvent<HTMLFormElement>): Promise<void> {
+        e.preventDefault() 
+        try {
+            const result = await fetch(`${ApiUrl()}/api/lift`, {
+                body: JSON.stringify({
+                    Name,
+                    Weight,
+                    Set1,
+                    Set2,
+                    Set3,
+                    Set4,
+                    Set5
+                }),
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+                method: "patch"
+            })
+            if (result.ok) {
+                liftHistoryQuery.refetch();
+                setUserMsg("Sets Recorded!")
+                setTimeout(() => setUserMsg(""), 5000)
+                setSet1(0)
+                setSet2(0)
+                setSet3(0)
+                setSet4(0)
+                setSet5(0)
+                setWeight(20)
+                setLoading(false);
+            }
+
+        } catch (error: any) {
+            console.log("error")
+            setError(error)
+            setLoading(false);
+        }
+    }
+
+    useEffect(()=> {
+        if(!selectedSet.Name) return;
+        setEditing(true);
+    },[selectedSet])
+
+    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const { name, value, type } = e.target;
+        setSelectedSet(prev => ({
+            ...prev,
+            [name]: type === 'number' ? Number(value) : value
+        }));
+    };
+
+    return {
+        error, setError,
+        loading, setLoading,
+        userMsg, setUserMsg,
+        Name, setName,
+        kg202, setKg202,
+        kg20, setKg20,
+        kg15, setKg15,
+        kg10, setKg10,
+        kg5, setKg5,
+        kg2_5, setKg2_5,
+        units, setUnits,
+        liftHistoryQuery,
+        liftOptionsQuery,
+        updateLiftSet,
+        selectedSet, setSelectedSet, handleChange, editing, setEditing,
+        AddSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5
+    }
+}

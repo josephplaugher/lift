@@ -7,7 +7,9 @@ import useGetToken from "./useGetToken";
 export default function useAddSets(
     liftHistoryQuery: UseQueryResult<ILift[]>, Name: string,
     setUserMsg: React.Dispatch<SetStateAction<string>>, setError: Dispatch<SetStateAction<string>>,
-    setLoading: Dispatch<SetStateAction<boolean>>) {
+    setLoading: Dispatch<SetStateAction<boolean>>,
+    selectedLift: ILift | undefined
+) {
     const token = useGetToken();
     const [Weight, setWeight] = useState<number | string>(20);
     const [Set1, setSet1] = useState<number | string>(0);
@@ -20,7 +22,9 @@ export default function useAddSets(
         e.preventDefault();
         setLoading(true);
         try {
-            await fetch(`${ApiUrl()}/api/lift`, {
+            const url = selectedLift ? `${ApiUrl()}/api/lift/${selectedLift.Id}` : `${ApiUrl()}/api/lift`;
+            const method = selectedLift ? "patch" : "post";
+            await fetch(url, {
                 body: JSON.stringify({
                     Name,
                     Weight,
@@ -35,10 +39,11 @@ export default function useAddSets(
                     "Content-Type": "application/json",
                     Accept: "application/json",
                 },
-                method: "post"
+                method
             })
             liftHistoryQuery.refetch();
-            setUserMsg("Sets Recorded!")
+            const msg = selectedLift ? "Set Updated" : "Set Saved";
+            setUserMsg(msg)
             setTimeout(() => setUserMsg(""), 5000)
             setSet1(0)
             setSet2(0)

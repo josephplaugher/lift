@@ -11,31 +11,25 @@ import LiftHistoryTable from "../components/LiftHistoryTable";
 import { EUnits } from "../interfaces/IUnits.enum";
 import ConvertUnits from "../utilities/ConvertUnits";
 import useGetToken from "../hooks/useGetToken";
+import useLiftSession from "../hooks/useLiftSession";
 
 export default function LiftSession() {
-    const token = useGetToken();
-    const [error, setError] = useState<string>("");
-    const [loading, setLoading] = useState<boolean>(false);
-    const [userMsg, setUserMsg] = useState<string>("");
-    const [Name, setName] = useState<string>("Deadlift");
-
-    const [kg202, setKg202] = useState<number>(0);
-    const [kg20, setKg20] = useState<number>(0);
-    const [kg15, setKg15] = useState<number>(0);
-    const [kg10, setKg10] = useState<number>(0);
-    const [kg5, setKg5] = useState<number>(0);
-    const [kg2_5, setKg2_5] = useState<number>(0);
-    const [units, setUnits] = useState<EUnits>(EUnits.Kg);
-
-    const liftHistoryQuery = useQuery<ILift[]>({ enabled: token != "", queryKey: ['liftHistory', Name], queryFn: () => GetLiftHistory(token, Name) })
-    const liftOptionsQuery = useQuery<ILiftOption[]>({ enabled: token != "", queryKey: ['liftOptions'], queryFn: () => GetLiftOptions(token) })
-    const { AddSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useAddSets(liftHistoryQuery, Name, setUserMsg, setError, setLoading);
-
-    useEffect(() => {
-        const w: number = ((kg202 + kg20 + kg15 + kg10 + kg5 + kg2_5) * 2) + 20;
-        setWeight(w)
-    }, [setWeight, kg202, kg20, kg15, kg10, kg5, kg2_5])
-
+    const { error, setError,
+        loading, setLoading,
+        userMsg, setUserMsg,
+        Name, setName,
+        kg202, setKg202,
+        kg20, setKg20,
+        kg15, setKg15,
+        kg10, setKg10,
+        kg5, setKg5,
+        kg2_5, setKg2_5,
+        units, setUnits,
+        liftHistoryQuery,
+        liftOptionsQuery,
+        updateLiftSet,
+        selectedSet, setSelectedSet, handleChange, editing, setEditing,
+        AddSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useLiftSession()
     return (
         <>
             <div className="container-fluid py-0 px-2" style={{ height: "80vh" }}>
@@ -48,7 +42,7 @@ export default function LiftSession() {
                     ) : liftHistoryQuery.status === 'error' ? (
                         <ErrorIndicator error={liftHistoryQuery.error.message} />
                     ) : (
-                        <LiftHistoryTable lifts={liftHistoryQuery.data} units={units} />
+                        <LiftHistoryTable lifts={liftHistoryQuery.data} units={units} setSelectedSet={setSelectedSet} />
                     )}
                 </div>
             </div>
@@ -121,6 +115,47 @@ export default function LiftSession() {
                     </div>
                 </div>
             </div >
+            {editing &&
+                <dialog open className="border border-3 border-primary" style={{ top: "80%" }}>
+                    <form onSubmit={(e) => updateLiftSet(e)}>
+                        <input name="name" value={selectedSet.Name} hidden onChange={() => { }}></input>
+                        <div style={inputgroup}>
+                            <p>Editing {selectedSet.Name}</p>
+                        </div>
+                        <div className="d-flex justify-content-center">
+                            <label htmlFor="weight">Weight</label> 
+                            <input type="number" style={liftInputStyle} className="mx-2" id="weight" name="wight" value={selectedSet.Weight} onChange={handleChange} pattern="\d*" inputMode="numeric" required></input>{units == EUnits.Kg ? "Kg" : "Lbs"}
+                        </div>
+                        <div className="d-flex justify-content-between py-3">
+                            <div style={inputgroup}>
+                                <label htmlFor="Set1">Set 1</label>
+                                <input type="number" style={liftInputStyle} id="Set1" name="Set1" value={selectedSet.Set1} onChange={handleChange} pattern="\d*" inputMode="numeric" required></input>
+                            </div>
+                            <div style={inputgroup}>
+                                <label htmlFor="Set2">Set 2</label>
+                                <input type="number" style={liftInputStyle} id="Set2" name="Set2" value={selectedSet.Set2} onChange={handleChange} pattern="\d*" inputMode="numeric"></input>
+                            </div>
+                            <div style={inputgroup}>
+                                <label htmlFor="Set3">Set 3</label>
+                                <input type="number" style={liftInputStyle} id="Set3" name="Set3" value={selectedSet.Set3} onChange={handleChange} pattern="\d*" inputMode="numeric"></input>
+                            </div>
+                            <div style={inputgroup}>
+                                <label htmlFor="Set4">Set 4</label>
+                                <input type="number" style={liftInputStyle} id="Set4" name="Set4" value={selectedSet.Set4} onChange={handleChange} pattern="\d*" inputMode="numeric"></input>
+                            </div>
+                            <div style={inputgroup}>
+                                <label htmlFor="Set5">Set 5</label>
+                                <input type="number" style={liftInputStyle} id="Set5" name="Set5" value={selectedSet.Set5} onChange={handleChange} pattern="\d*" inputMode="numeric"></input>
+                            </div>
+                        </div>
+                        <div className="d-flex justify-content-around">
+                            <button type="submit" className="btn btn-primary w-100 p-3 m-2">Save Change</button>
+                            <button type="button" className="btn btn-secondary w-100 p-3 m-2" onClick={() => setEditing(false)}>Cancel</button>
+                        </div>
+                    </form>
+                    {error && <p>{error}</p>}
+                </dialog>
+            }
             {loading && <div>
                 <LoadingIndicatorFullScreen />
             </div>}
