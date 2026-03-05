@@ -14,7 +14,7 @@ export default function useLiftSession() {
     const [error, setError] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const [userMsg, setUserMsg] = useState<string>("");
-    const [Name, setName] = useState<string>("Deadlift");
+    const [Name, setName] = useState<string>("");
 
     const [confirmDeleteModalOpen, setConfirmDeleteModelOpen] = useState<boolean>(false);
     const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
