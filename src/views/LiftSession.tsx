@@ -1,23 +1,17 @@
-import { useEffect, useState } from "react";
-import ILift from "../interfaces/ILift.interface";
 import ILiftOption from "../interfaces/LiftOptions.interfaces";
-import { useQuery } from "@tanstack/react-query";
-import GetLiftHistory from "../data/GetLiftHistory";
 import { ErrorIndicator, LoadingIndicator, LoadingIndicatorFullScreen } from "../components/StatusIndicators";
-import GetLiftOptions from "../data/GetLiftOptions";
 import { inputgroup, liftInputStyle } from "../constants/constants";
 import LiftHistoryTable from "../components/LiftHistoryTable";
 import { EUnits } from "../interfaces/IUnits.enum";
 import ConvertUnits from "../utilities/ConvertUnits";
-import useGetToken from "../hooks/useGetToken";
 import useLiftSession from "../hooks/useLiftSession";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
 export default function LiftSession() {
-    const { error, setError,
-        loading, setLoading,
-        userMsg, setUserMsg,
+    const { error,
+        loading,
+        userMsg,
         Name, setName,
         kg202, setKg202,
         kg20, setKg20,
@@ -28,8 +22,8 @@ export default function LiftSession() {
         units, setUnits,
         liftHistoryQuery,
         liftOptionsQuery, deleteOption,
-        selectedSet, setSelectedSet, handleChange, editing, setEditing, confirmDelete, setConfirmDelete, confirmDeleteModalOpen, setConfirmDeleteModelOpen,
-        AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useLiftSession()
+        selectedSet, setSelectedSet, handleChange, editing, setEditing, setConfirmDelete, confirmDeleteModalOpen, setConfirmDeleteModelOpen,
+        AddSets, UpdateSets, Weight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useLiftSession()
     return (
         <>
             <div className="container-fluid py-0 px-2" style={{ height: "90vh" }}>

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import ApiUrl from "../utilities/ApiUrl";
 import useGetToken from "./useGetToken";
 import { useQuery } from "@tanstack/react-query";
 import ILiftOption from "../interfaces/LiftOptions.interfaces";
@@ -62,6 +61,7 @@ export default function useLiftOption() {
     }
 
     async function deleteOption() {
+        if(!confirmDelete) return;
         setLoading(true);
         try {
             const result = await FetchDelete(`liftoption`,
@@ -84,20 +84,17 @@ export default function useLiftOption() {
     }
 
     return {
+        loading,
         liftOptionsQuery,
         name,
         setName,
-        selectedId,
         setSelectedId,
         isBarbellLift,
         setIsBarbellLift,
         userMsg,
-        setUserMsg,
         error,
-        setError,
         confirmDeleteModalOpen,
         setConfirmDeleteModelOpen,
-        confirmDelete,
         setConfirmDelete,
         addOption,
         updateOption,

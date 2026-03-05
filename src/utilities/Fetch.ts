@@ -11,7 +11,7 @@ export async function FetchGet(url: string, token: string) {
     return response;
 }
 
-export async function FetchPost(url: string, body: {}, token: string) {
+export async function FetchPost(url: string, body: object, token: string) {
     const response = await fetch(`${ApiUrl()}/api/${url}`, {
         body: JSON.stringify(body),
         headers: {
@@ -24,7 +24,7 @@ export async function FetchPost(url: string, body: {}, token: string) {
     return response;
 }
 
-export async function FetchPatch(url: string, body: {}, token: string) {
+export async function FetchPatch(url: string, body: object, token: string) {
     const response = await fetch(`${ApiUrl()}/api/${url}`, {
         body: JSON.stringify(body),
         headers: {
@@ -37,7 +37,7 @@ export async function FetchPatch(url: string, body: {}, token: string) {
     return response;
 }
 
-export async function FetchDelete(url: string, body: {}, token: string) {
+export async function FetchDelete(url: string, body: object, token: string) {
     const response = await fetch(`${ApiUrl()}/api/${url}`, {
         body: JSON.stringify(body),
         headers: {

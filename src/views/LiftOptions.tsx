@@ -1,29 +1,23 @@
-import { FormEvent, useState } from "react";
 import ILiftOption from "../interfaces/LiftOptions.interfaces";
-import ApiUrl from "../utilities/ApiUrl";
 import { ErrorIndicator, LoadingIndicator } from "../components/StatusIndicators";
-import useGetToken from "../hooks/useGetToken";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons/faCirclePlus";
 import useLiftOption from "../hooks/useLiftOption";
-import { faCancel, faCheck, faSave } from "@fortawesome/free-solid-svg-icons";
+import { faCancel, faSave } from "@fortawesome/free-solid-svg-icons";
 
 export default function LiftOptions() {
     const {
+        loading,
         liftOptionsQuery,
         name,
         setName,
-        selectedId,
         setSelectedId,
         isBarbellLift,
         setIsBarbellLift,
         userMsg,
-        setUserMsg,
         error,
-        setError,
         confirmDeleteModalOpen,
         setConfirmDeleteModelOpen,
-        confirmDelete,
         setConfirmDelete,
         addOption,
         updateOption,
@@ -70,7 +64,8 @@ export default function LiftOptions() {
                     </div>
                     {editing}
                     {editing && <div className="text-center"><em>Editing Lift Option</em></div>}
-                    {/* {error && <p>{error}</p>} */}
+                    {error && <p>{error}</p>}
+                    {loading && <LoadingIndicator />}
                     {userMsg && <div className="text-center text-success fw-bold">{userMsg}</div>}
                 </div>
                 <div className="row">

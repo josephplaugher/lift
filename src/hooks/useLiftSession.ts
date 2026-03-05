@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ILift from "../interfaces/ILift.interface";
 import ILiftOption from "../interfaces/LiftOptions.interfaces";
 import { useQuery } from "@tanstack/react-query";
@@ -54,9 +54,10 @@ export default function useLiftSession() {
             ...prev,
             [name]: type === 'number' ? parseInt(value) : value
         }));
-    };
+    }
 
     async function deleteOption() {
+        if(!confirmDelete) return;
         setLoading(true);
         try {
             const result = await FetchDelete(`lift`,
