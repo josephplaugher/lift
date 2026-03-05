@@ -27,16 +27,16 @@ export default function LiftSession() {
         kg2_5, setKg2_5,
         units, setUnits,
         liftHistoryQuery,
-        liftOptionsQuery,
-        selectedSet, setSelectedSet, handleChange, editing, setEditing,
+        liftOptionsQuery, deleteOption,
+        selectedSet, setSelectedSet, handleChange, editing, setEditing, confirmDelete, setConfirmDelete, confirmDeleteModalOpen, setConfirmDeleteModelOpen,
         AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useLiftSession()
     return (
         <>
-            <div className="container-fluid py-0 px-2" style={{ height: "80vh" }}>
+            <div className="container-fluid py-0 px-2" style={{ height: "90vh" }}>
                 <button className="toggle-btn btn btn-secondary p-2" onClick={() => { units == EUnits.Kg ? setUnits(EUnits.Lbs) : setUnits(EUnits.Kg) }}>
                     {units}
                 </button>
-                <div className="row overflow-auto p-2 h-75">
+                <div className="row overflow-auto p-2" style={{height: "58vh"}}>
                     {liftHistoryQuery.status === 'pending' ? (
                         <LoadingIndicator />
                     ) : liftHistoryQuery.status === 'error' ? (
@@ -46,7 +46,7 @@ export default function LiftSession() {
                     )}
                 </div>
             </div>
-            <div className="container-fluid py-3 border border-4 border-primary" style={{ bottom: "0", position: "absolute" }} data-testid="lift-session">
+            <div className="container-fluid py-3 border border-4 border-primary" style={{ bottom: "0", position: "absolute", height: "35vh" }} data-testid="lift-session">
                 <div className="row pb-3" >
                     <div className="col">
                         <>
@@ -148,12 +148,32 @@ export default function LiftSession() {
                         </div>
                         <div className="d-flex justify-content-around">
                             <button type="submit" className="btn btn-primary w-100 p-3 m-2">Save Change</button>
-                            <button type="submit" className="btn btn-danger w-100 p-3 m-2">Delete</button>
+                            <p className="btn btn-danger w-100 p-3 m-2 text-center"
+                                onClick={() => {
+                                    setEditing(false);
+                                    setConfirmDeleteModelOpen(true);
+                                }}>Delete</p>
                             <button type="button" className="btn btn-secondary w-100 p-3 m-2" onClick={() => setEditing(false)}>Close</button>
                         </div>
                     </form>
                     {error && <p>{error}</p>}
                     {userMsg && <p className="text-primary text-center fw-bold p-3">{userMsg} <FontAwesomeIcon icon={faCheck} className="text-success" /></p>}
+                </dialog>
+            }
+
+            {confirmDeleteModalOpen &&
+                <dialog open className="border border-3 border-danger">
+                    <div className="text-center">
+                        <p>Do you really want to delete this set?</p>
+                        <p><em>This action cannot be undone.</em></p>
+                    </div>
+                    <div className="d-flex justify-content-around">
+                        <button className="btn btn-primary btn-sm" onClick={() => setConfirmDeleteModelOpen(false)}>No</button>
+                        <button className="btn btn-danger btn-sm" onClick={() => {
+                            setConfirmDelete(true);
+                            deleteOption();
+                        }}>Yes</button>
+                    </div>
                 </dialog>
             }
             {loading && <div>

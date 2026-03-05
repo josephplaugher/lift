@@ -7,7 +7,7 @@ import GetLiftOptions from "../data/GetLiftOptions";
 import useAddSets from "../hooks/useAddSet";
 import { EUnits } from "../interfaces/IUnits.enum";
 import useGetToken from "../hooks/useGetToken";
-import { FetchPatch } from "../utilities/Fetch";
+import { FetchDelete } from "../utilities/Fetch";
 
 export default function useLiftSession() {
     const token = useGetToken();
@@ -15,6 +15,9 @@ export default function useLiftSession() {
     const [loading, setLoading] = useState<boolean>(false);
     const [userMsg, setUserMsg] = useState<string>("");
     const [Name, setName] = useState<string>("Deadlift");
+
+    const [confirmDeleteModalOpen, setConfirmDeleteModelOpen] = useState<boolean>(false);
+    const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
 
     const [kg202, setKg202] = useState<number>(0);
     const [kg20, setKg20] = useState<number>(0);
@@ -30,7 +33,6 @@ export default function useLiftSession() {
         Date: '',
         Set1: 0,
     });
-
 
     const liftHistoryQuery = useQuery<ILift[]>({ enabled: token != "", queryKey: ['liftHistory', Name], queryFn: () => GetLiftHistory(token, Name) })
     const liftOptionsQuery = useQuery<ILiftOption[]>({ enabled: token != "", queryKey: ['liftOptions'], queryFn: () => GetLiftOptions(token) })
@@ -54,6 +56,32 @@ export default function useLiftSession() {
         }));
     };
 
+    async function deleteOption() {
+        setLoading(true);
+        try {
+            const result = await FetchDelete(`lift`,
+                { Id: selectedSet.Id },
+                token)
+            if (result.ok) {
+                liftHistoryQuery.refetch();
+                setUserMsg("Set deleted")
+                setSelectedSet({
+                    Name: '',
+                    Weight: 0,
+                    Date: '',
+                    Set1: 0,
+                });
+                setConfirmDeleteModelOpen(false);
+                setTimeout(() => setUserMsg(""), 5000)
+            }
+        } catch (error: any) {
+            console.log("error")
+            setError(error)
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return {
         error, setError,
         loading, setLoading,
@@ -66,8 +94,8 @@ export default function useLiftSession() {
         kg5, setKg5,
         kg2_5, setKg2_5,
         units, setUnits,
-        liftHistoryQuery,
-        liftOptionsQuery,
+        liftHistoryQuery, deleteOption,
+        liftOptionsQuery, confirmDelete, setConfirmDelete, confirmDeleteModalOpen, setConfirmDeleteModelOpen,
         selectedSet, setSelectedSet, handleChange, editing, setEditing,
         AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5
     }

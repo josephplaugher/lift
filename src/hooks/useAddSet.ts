@@ -20,7 +20,6 @@ export default function useAddSets(
 
     async function AddSets(e: FormEvent<HTMLFormElement>): Promise<void> {
         e.preventDefault();
-        console.log("add set")
         setLoading(true);
         try {
             await FetchPost(`lift`,
@@ -53,7 +52,6 @@ export default function useAddSets(
 
     async function UpdateSets(e: FormEvent<HTMLFormElement>): Promise<void> {
         e.preventDefault();
-        console.log("update sets")
         if (!selectedLift?.Id) return;
         setLoading(true);
         try {

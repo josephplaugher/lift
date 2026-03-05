@@ -7,6 +7,7 @@ import GetLiftOptions from "../data/GetLiftOptions";
 import { FetchDelete, FetchPatch, FetchPost } from "../utilities/Fetch";
 
 export default function useLiftOption() {
+    const [loading, setLoading] = useState<boolean>(false);
     const [name, setName] = useState<string>("");
     const [selectedId, setSelectedId] = useState<string>("");
     const [isBarbellLift, setIsBarbellLift] = useState<boolean>(false);
@@ -20,9 +21,8 @@ export default function useLiftOption() {
     const liftOptionsQuery = useQuery<ILiftOption[]>({ enabled: token != "", queryKey: ['liftOptions'], queryFn: () => GetLiftOptions(token) })
 
     async function addOption() {
+        setLoading(true);
         try {
-            console.trace('liftoption fetch post');
-
             const result = await FetchPost(`liftoption`,
                 { Name: name, IsBarbellLift: isBarbellLift },
                 token)
@@ -32,14 +32,16 @@ export default function useLiftOption() {
                 setName("");
                 setTimeout(() => setUserMsg(""), 5000)
             }
-
         } catch (error: any) {
             console.log("error", error)
             setError("Something went wrong. Try again")
+        } finally {
+            setLoading(false);
         }
     }
 
     async function updateOption() {
+        setLoading(true);
         try {
             const result = await FetchPatch(`liftoption`,
                 { Name: name, IsBarbellLift: isBarbellLift, Id: selectedId },
@@ -54,10 +56,13 @@ export default function useLiftOption() {
         } catch (error: any) {
             console.log("error")
             setError(error)
+        } finally {
+            setLoading(false);
         }
     }
 
     async function deleteOption() {
+        setLoading(true);
         try {
             const result = await FetchDelete(`liftoption`,
                 { Id: selectedId },
@@ -70,10 +75,11 @@ export default function useLiftOption() {
                 setConfirmDeleteModelOpen(false);
                 setTimeout(() => setUserMsg(""), 5000)
             }
-
         } catch (error: any) {
             console.log("error")
             setError(error)
+        } finally {
+            setLoading(false);
         }
     }
 
