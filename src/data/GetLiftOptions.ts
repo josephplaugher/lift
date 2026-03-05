@@ -1,14 +1,7 @@
 import ILiftOption from "../interfaces/LiftOptions.interfaces";
-import ApiUrl from "../utilities/ApiUrl";
+import { FetchGet } from "../utilities/Fetch";
 
 export default async function GetLiftOptions(token: string): Promise<ILiftOption[]> {
-    console.trace('liftoption fetch get');
-    const response = await fetch(`${ApiUrl()}/api/liftoption`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-        },
-    })
+    const response = await FetchGet(`liftoption`, token)
     return await response.json();
 }

@@ -1,8 +1,8 @@
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
-import ApiUrl from "../utilities/ApiUrl";
 import { UseQueryResult } from "@tanstack/react-query";
 import ILift from "../interfaces/ILift.interface";
 import useGetToken from "./useGetToken";
+import { FetchPost } from "../utilities/Fetch";
 
 export default function useAddSets(
     liftHistoryQuery: UseQueryResult<ILift[]>, Name: string,
@@ -22,10 +22,8 @@ export default function useAddSets(
         e.preventDefault();
         setLoading(true);
         try {
-            const url = selectedLift ? `${ApiUrl()}/api/lift/${selectedLift.Id}` : `${ApiUrl()}/api/lift`;
-            const method = selectedLift ? "patch" : "post";
-            await fetch(url, {
-                body: JSON.stringify({
+            await FetchPost(`lift`,
+                {
                     Name,
                     Weight,
                     Set1,
@@ -33,17 +31,10 @@ export default function useAddSets(
                     Set3,
                     Set4,
                     Set5
-                }),
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
                 },
-                method
-            })
+                token)
             liftHistoryQuery.refetch();
-            const msg = selectedLift ? "Set Updated" : "Set Saved";
-            setUserMsg(msg)
+            setUserMsg("Set Saved")
             setTimeout(() => setUserMsg(""), 5000)
             setSet1(0)
             setSet2(0)
@@ -51,14 +42,40 @@ export default function useAddSets(
             setSet4(0)
             setSet5(0)
             setWeight(20)
-            setLoading(false);
-             
         } catch (error: any) {
             console.log("error")
             setError(error)
+        } finally {
             setLoading(false);
         }
     }
 
-    return { AddSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 }
+    async function UpdateSets(e: FormEvent<HTMLFormElement>): Promise<void> {
+        e.preventDefault();
+        if (!selectedLift?.Id) return;
+        setLoading(true);
+        try {
+            await FetchPost(`lift/${selectedLift.Id}`,
+                {
+                    Name,
+                    Weight,
+                    Set1,
+                    Set2,
+                    Set3,
+                    Set4,
+                    Set5
+                },
+                token)
+            liftHistoryQuery.refetch();
+            setUserMsg("Set Updated")
+            setTimeout(() => setUserMsg(""), 5000)
+        } catch (error: any) {
+            console.log("error")
+            setError(error)
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    return { AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 }
 }

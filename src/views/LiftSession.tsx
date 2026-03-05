@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import GetLiftHistory from "../data/GetLiftHistory";
 import { ErrorIndicator, LoadingIndicator, LoadingIndicatorFullScreen } from "../components/StatusIndicators";
 import GetLiftOptions from "../data/GetLiftOptions";
-import useAddSets from "../hooks/useAddSet";
 import { inputgroup, liftInputStyle } from "../constants/constants";
 import LiftHistoryTable from "../components/LiftHistoryTable";
 import { EUnits } from "../interfaces/IUnits.enum";
@@ -29,7 +28,7 @@ export default function LiftSession() {
         liftOptionsQuery,
         updateLiftSet,
         selectedSet, setSelectedSet, handleChange, editing, setEditing,
-        AddSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useLiftSession()
+        AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useLiftSession()
     return (
         <>
             <div className="container-fluid py-0 px-2" style={{ height: "80vh" }}>
@@ -117,7 +116,7 @@ export default function LiftSession() {
             </div >
             {editing &&
                 <dialog open className="border border-3 border-primary" style={{ top: "80%" }}>
-                    <form onSubmit={(e) => updateLiftSet(e)}>
+                    <form onSubmit={(e) => UpdateSets(e)}>
                         <input name="name" value={selectedSet.Name} hidden onChange={() => { }}></input>
                         <div style={inputgroup}>
                             <p>Editing {selectedSet.Name}</p>

@@ -4,6 +4,7 @@ import useGetToken from "./useGetToken";
 import { useQuery } from "@tanstack/react-query";
 import ILiftOption from "../interfaces/LiftOptions.interfaces";
 import GetLiftOptions from "../data/GetLiftOptions";
+import { FetchDelete, FetchPatch, FetchPost } from "../utilities/Fetch";
 
 export default function useLiftOption() {
     const [name, setName] = useState<string>("");
@@ -22,15 +23,9 @@ export default function useLiftOption() {
         try {
             console.trace('liftoption fetch post');
 
-            const result = await fetch(`${ApiUrl()}/api/liftoption`, {
-                body: JSON.stringify({ Name: name, IsBarbellLift: isBarbellLift }),
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                },
-                method: "post"
-            })
+            const result = await FetchPost(`liftoption`,
+                { Name: name, IsBarbellLift: isBarbellLift },
+                token)
             if (result.ok) {
                 liftOptionsQuery.refetch();
                 setUserMsg("Lift option added")
@@ -46,19 +41,11 @@ export default function useLiftOption() {
 
     async function updateOption() {
         try {
-            console.log(ApiUrl())
-            console.trace('liftoption fetch patch');
-            const result = await fetch(`${ApiUrl()}/api/liftoption`, {
-                body: JSON.stringify({ Name: name, IsBarbellLift: isBarbellLift, id: selectedId }),
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                },
-                method: "patch"
-            })
+            const result = await FetchPatch(`liftoption`,
+                { Name: name, IsBarbellLift: isBarbellLift, Id: selectedId },
+                token)
             if (result.ok) {
-                // liftOptionsQuery.refetch();
+                liftOptionsQuery.refetch();
                 setUserMsg("Lift option updated")
                 setName("");
                 setTimeout(() => setUserMsg(""), 5000)
@@ -72,16 +59,9 @@ export default function useLiftOption() {
 
     async function deleteOption() {
         try {
-            console.trace('liftoption fetch delete');
-            const result = await fetch(`${ApiUrl()}/api/liftoption`, {
-                body: JSON.stringify({ id: selectedId }),
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                },
-                method: "delete"
-            })
+            const result = await FetchDelete(`liftoption`,
+                { Id: selectedId },
+                token)
             if (result.ok) {
                 liftOptionsQuery.refetch();
                 setUserMsg("Lift option deleted")

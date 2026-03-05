@@ -3,16 +3,11 @@ import ILift from "../interfaces/ILift.interface";
 import ILiftOption from "../interfaces/LiftOptions.interfaces";
 import { useQuery } from "@tanstack/react-query";
 import GetLiftHistory from "../data/GetLiftHistory";
-import { ErrorIndicator, LoadingIndicator, LoadingIndicatorFullScreen } from "../components/StatusIndicators";
 import GetLiftOptions from "../data/GetLiftOptions";
 import useAddSets from "../hooks/useAddSet";
-import { inputgroup, liftInputStyle } from "../constants/constants";
-import LiftHistoryTable from "../components/LiftHistoryTable";
 import { EUnits } from "../interfaces/IUnits.enum";
-import ConvertUnits from "../utilities/ConvertUnits";
 import useGetToken from "../hooks/useGetToken";
-import ApiUrl from "../utilities/ApiUrl";
-import { setegid } from "process";
+import { FetchPatch } from "../utilities/Fetch";
 
 export default function useLiftSession() {
     const token = useGetToken();
@@ -39,7 +34,7 @@ export default function useLiftSession() {
 
     const liftHistoryQuery = useQuery<ILift[]>({ enabled: token != "", queryKey: ['liftHistory', Name], queryFn: () => GetLiftHistory(token, Name) })
     const liftOptionsQuery = useQuery<ILiftOption[]>({ enabled: token != "", queryKey: ['liftOptions'], queryFn: () => GetLiftOptions(token) })
-    const { AddSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useAddSets(liftHistoryQuery, Name, setUserMsg, setError, setLoading, selectedSet);
+    const { AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useAddSets(liftHistoryQuery, Name, setUserMsg, setError, setLoading, selectedSet);
 
     useEffect(() => {
         const w: number = ((kg202 + kg20 + kg15 + kg10 + kg5 + kg2_5) * 2) + 20;
@@ -47,10 +42,10 @@ export default function useLiftSession() {
     }, [setWeight, kg202, kg20, kg15, kg10, kg5, kg2_5])
 
     async function updateLiftSet(e: FormEvent<HTMLFormElement>): Promise<void> {
-        e.preventDefault() 
+        e.preventDefault()
         try {
-            const result = await fetch(`${ApiUrl()}/api/lift`, {
-                body: JSON.stringify({
+            const result = await FetchPatch(`lift`,
+                JSON.stringify({
                     Name,
                     Weight,
                     Set1,
@@ -58,14 +53,7 @@ export default function useLiftSession() {
                     Set3,
                     Set4,
                     Set5
-                }),
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                },
-                method: "patch"
-            })
+                }), token)
             if (result.ok) {
                 liftHistoryQuery.refetch();
                 setUserMsg("Sets Recorded!")
@@ -86,10 +74,10 @@ export default function useLiftSession() {
         }
     }
 
-    useEffect(()=> {
-        if(!selectedSet.Name) return;
+    useEffect(() => {
+        if (!selectedSet.Name) return;
         setEditing(true);
-    },[selectedSet])
+    }, [selectedSet])
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         const { name, value, type } = e.target;
@@ -115,6 +103,6 @@ export default function useLiftSession() {
         liftOptionsQuery,
         updateLiftSet,
         selectedSet, setSelectedSet, handleChange, editing, setEditing,
-        AddSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5
+        AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5
     }
 }

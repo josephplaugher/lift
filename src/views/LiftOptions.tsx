@@ -38,8 +38,8 @@ export default function LiftOptions() {
                 <div className="row">
                     <div className={`d-flex justify-content-between py-2 ${editing && "border border-2 border-warning"}`} data-testid="add-options">
                         <div className="">
-                            <input className="w-auto form-control control-sm" name="Name" value={name} 
-                                onChange={(e) => setName(e.target.value)} placeholder="Life Name..." required></input>
+                            <input className="w-auto form-control control-sm" name="Name" value={name}
+                                onChange={(e) => setName(e.target.value)} placeholder="Lift Name..." required></input>
                         </div>
                         <div className="align-items-end mt-1" title="Check if this lift requires a barbell. I.E. deadlift vs kettlebell deadlift">
                             <label className="form-check-label me-1" htmlFor="barbellLiftCheckbox">
@@ -59,8 +59,9 @@ export default function LiftOptions() {
                                 <>
                                     <FontAwesomeIcon className="fa-xl text-primary mt-1" icon={faSave} onClick={() => updateOption()} />
                                     <FontAwesomeIcon className="fa-xl text-primary mt-1" icon={faCancel} onClick={() => {
-                                        setEditing(false); setName(""); setIsBarbellLift(false);}
-                                     } />
+                                        setEditing(false); setName(""); setIsBarbellLift(false);
+                                    }
+                                    } />
                                 </>
                                 :
                                 <FontAwesomeIcon className="fa-xl text-primary mt-1" icon={faCirclePlus} onClick={() => addOption()} />
@@ -77,6 +78,7 @@ export default function LiftOptions() {
                         <thead>
                             <tr>
                                 <th>Lift Name</th>
+                                <th>Barbell Lift</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -87,10 +89,10 @@ export default function LiftOptions() {
                                 <tr><td colSpan={2}><ErrorIndicator error={liftOptionsQuery.error.message} /></td></tr>
                             ) : (
                                 <>
-                                    {liftOptionsQuery.data.map((l: ILiftOption) =>
+                                    {liftOptionsQuery.data.length > 0 ? liftOptionsQuery.data.map((l: ILiftOption) =>
                                         <tr className="m-2" key={l.Id} id={l.Id}>
                                             <td> {l.Name}</td>
-                                            <td> {l.IsBarbellLift}</td>
+                                            <td> {l.IsBarbellLift ? "Yes" : "No"}</td>
                                             <td><button className="btn btn-sm btn-primary"
                                                 onClick={() => {
                                                     setEditing(true);
@@ -105,7 +107,9 @@ export default function LiftOptions() {
                                                     setConfirmDeleteModelOpen(true);
                                                 }}>Delete</button>
                                             </td>
-                                        </tr>)}
+                                        </tr>) :
+                                        <tr><td>Nothing Here</td></tr>
+                                    }
                                 </>
                             )}
                         </tbody>
