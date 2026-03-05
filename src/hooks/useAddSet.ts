@@ -2,7 +2,7 @@ import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { UseQueryResult } from "@tanstack/react-query";
 import ILift from "../interfaces/ILift.interface";
 import useGetToken from "./useGetToken";
-import { FetchPost } from "../utilities/Fetch";
+import { FetchPatch, FetchPost } from "../utilities/Fetch";
 
 export default function useAddSets(
     liftHistoryQuery: UseQueryResult<ILift[]>, Name: string,
@@ -20,6 +20,7 @@ export default function useAddSets(
 
     async function AddSets(e: FormEvent<HTMLFormElement>): Promise<void> {
         e.preventDefault();
+        console.log("add set")
         setLoading(true);
         try {
             await FetchPost(`lift`,
@@ -52,23 +53,21 @@ export default function useAddSets(
 
     async function UpdateSets(e: FormEvent<HTMLFormElement>): Promise<void> {
         e.preventDefault();
+        console.log("update sets")
         if (!selectedLift?.Id) return;
         setLoading(true);
         try {
-            await FetchPost(`lift/${selectedLift.Id}`,
+            const result = await FetchPatch(`lift`,
                 {
-                    Name,
-                    Weight,
-                    Set1,
-                    Set2,
-                    Set3,
-                    Set4,
-                    Set5
+                    Id: selectedLift.Id,
+                    ...selectedLift
                 },
                 token)
-            liftHistoryQuery.refetch();
-            setUserMsg("Set Updated")
-            setTimeout(() => setUserMsg(""), 5000)
+            if (result.ok) {
+                liftHistoryQuery.refetch();
+                setUserMsg("Set Updated")
+                setTimeout(() => setUserMsg(""), 5000)
+            }
         } catch (error: any) {
             console.log("error")
             setError(error)

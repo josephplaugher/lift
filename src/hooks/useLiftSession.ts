@@ -41,39 +41,6 @@ export default function useLiftSession() {
         setWeight(w)
     }, [setWeight, kg202, kg20, kg15, kg10, kg5, kg2_5])
 
-    async function updateLiftSet(e: FormEvent<HTMLFormElement>): Promise<void> {
-        e.preventDefault()
-        try {
-            const result = await FetchPatch(`lift`,
-                JSON.stringify({
-                    Name,
-                    Weight,
-                    Set1,
-                    Set2,
-                    Set3,
-                    Set4,
-                    Set5
-                }), token)
-            if (result.ok) {
-                liftHistoryQuery.refetch();
-                setUserMsg("Sets Recorded!")
-                setTimeout(() => setUserMsg(""), 5000)
-                setSet1(0)
-                setSet2(0)
-                setSet3(0)
-                setSet4(0)
-                setSet5(0)
-                setWeight(20)
-                setLoading(false);
-            }
-
-        } catch (error: any) {
-            console.log("error")
-            setError(error)
-            setLoading(false);
-        }
-    }
-
     useEffect(() => {
         if (!selectedSet.Name) return;
         setEditing(true);
@@ -83,7 +50,7 @@ export default function useLiftSession() {
         const { name, value, type } = e.target;
         setSelectedSet(prev => ({
             ...prev,
-            [name]: type === 'number' ? Number(value) : value
+            [name]: type === 'number' ? parseInt(value) : value
         }));
     };
 
@@ -101,7 +68,6 @@ export default function useLiftSession() {
         units, setUnits,
         liftHistoryQuery,
         liftOptionsQuery,
-        updateLiftSet,
         selectedSet, setSelectedSet, handleChange, editing, setEditing,
         AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5
     }

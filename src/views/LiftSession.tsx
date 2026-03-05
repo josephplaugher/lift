@@ -11,6 +11,8 @@ import { EUnits } from "../interfaces/IUnits.enum";
 import ConvertUnits from "../utilities/ConvertUnits";
 import useGetToken from "../hooks/useGetToken";
 import useLiftSession from "../hooks/useLiftSession";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
 export default function LiftSession() {
     const { error, setError,
@@ -26,7 +28,6 @@ export default function LiftSession() {
         units, setUnits,
         liftHistoryQuery,
         liftOptionsQuery,
-        updateLiftSet,
         selectedSet, setSelectedSet, handleChange, editing, setEditing,
         AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useLiftSession()
     return (
@@ -104,26 +105,24 @@ export default function LiftSession() {
                                 </div>
                             </div>
                             <div className="">
-                                {userMsg ? <p className="bg-primary text-white text-center fw-bold p-3">{userMsg}</p>
-                                    :
-                                    <button type="submit" className="btn btn-primary w-100 p-3">Add Sets</button>
-                                }
+                                <button type="submit" className="btn btn-primary w-100 p-3">Add Sets</button>
                             </div>
                         </form>
                         {error && <p>{error}</p>}
+                        {userMsg && <p className="text-primary text-center fw-bold p-3">{userMsg} <FontAwesomeIcon icon={faCheck} className="text-success" /></p>}
                     </div>
                 </div>
             </div >
             {editing &&
                 <dialog open className="border border-3 border-primary" style={{ top: "80%" }}>
                     <form onSubmit={(e) => UpdateSets(e)}>
-                        <input name="name" value={selectedSet.Name} hidden onChange={() => { }}></input>
+                        <input name="Name" value={selectedSet.Name} hidden onChange={() => { }}></input>
                         <div style={inputgroup}>
                             <p>Editing {selectedSet.Name}</p>
                         </div>
                         <div className="d-flex justify-content-center">
-                            <label htmlFor="weight">Weight</label> 
-                            <input type="number" style={liftInputStyle} className="mx-2" id="weight" name="wight" value={selectedSet.Weight} onChange={handleChange} pattern="\d*" inputMode="numeric" required></input>{units == EUnits.Kg ? "Kg" : "Lbs"}
+                            <label htmlFor="weight">Weight</label>
+                            <input type="number" style={liftInputStyle} className="mx-2" id="weight" name="Weight" value={selectedSet.Weight} onChange={handleChange} pattern="\d*" inputMode="numeric" required></input>{units == EUnits.Kg ? "Kg" : "Lbs"}
                         </div>
                         <div className="d-flex justify-content-between py-3">
                             <div style={inputgroup}>
@@ -149,10 +148,12 @@ export default function LiftSession() {
                         </div>
                         <div className="d-flex justify-content-around">
                             <button type="submit" className="btn btn-primary w-100 p-3 m-2">Save Change</button>
-                            <button type="button" className="btn btn-secondary w-100 p-3 m-2" onClick={() => setEditing(false)}>Cancel</button>
+                            <button type="submit" className="btn btn-danger w-100 p-3 m-2">Delete</button>
+                            <button type="button" className="btn btn-secondary w-100 p-3 m-2" onClick={() => setEditing(false)}>Close</button>
                         </div>
                     </form>
                     {error && <p>{error}</p>}
+                    {userMsg && <p className="text-primary text-center fw-bold p-3">{userMsg} <FontAwesomeIcon icon={faCheck} className="text-success" /></p>}
                 </dialog>
             }
             {loading && <div>
