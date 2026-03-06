@@ -28,7 +28,7 @@ export default function LiftOptions() {
 
     return (
         <>
-            <div className="container-fluid" data-testid="options-list">
+            <div className="container-fluid" data-testid="options-list" style={{height: "90vh", overflowY: "auto"}}>
                 <div className="row">
                     <div className={`d-flex justify-content-between py-2 ${editing && "border border-2 border-warning"}`} data-testid="add-options">
                         <div className="">

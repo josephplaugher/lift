@@ -6,7 +6,7 @@ import ConvertUnits from "../utilities/ConvertUnits";
 export default function LiftHistoryTable(param: { lifts: ILift[], units: EUnits, setSelectedSet?: React.Dispatch<SetStateAction<ILift>> }) {
     return (
         <>
-            <table className="table" data-testid="lift-history-table">
+            <table className="table" data-testid="lift-history-table" style={{fontSize: "0.75rem"}}>
                 <thead>
                     <tr>
                         <th>Date</th>
