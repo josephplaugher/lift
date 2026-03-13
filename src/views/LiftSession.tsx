@@ -30,7 +30,7 @@ export default function LiftSession() {
                 <button className="toggle-btn btn btn-secondary p-2" onClick={() => { units == EUnits.Kg ? setUnits(EUnits.Lbs) : setUnits(EUnits.Kg) }}>
                     {units}
                 </button>
-                <div className="row overflow-auto p-2" style={{height: "58vh"}}>
+                <div className="row overflow-auto p-2" style={{ height: "58vh" }}>
                     {liftHistoryQuery.status === 'pending' ? (
                         <LoadingIndicator />
                     ) : liftHistoryQuery.status === 'error' ? (
@@ -40,23 +40,21 @@ export default function LiftSession() {
                     )}
                 </div>
             </div>
-            <div className="container-fluid py-3 border border-4 border-primary" style={{ bottom: "0", position: "absolute", height: "35vh" }} data-testid="lift-session">
+            <div className="container-fluid py-3 border border-4 border-primary" style={{ bottom: "0", position: "absolute" }} data-testid="lift-session">
                 <div className="row pb-3" >
                     <div className="col">
-                        <>
-                            <select onChange={(e) => setName(e.target.value)}
-                                className={`form-control ${liftOptionsQuery.status == "pending" ? "bg-warning" : liftOptionsQuery.status == "error" ? "text-danger" : ""}`}>
-                                {liftOptionsQuery.status === 'pending' ? (
-                                    <option value="">Getting lift options...</option>
-                                ) : liftOptionsQuery.status === 'error' ? (
-                                    <option value="">Something went wrong...</option>
-                                ) : (
-                                    liftOptionsQuery.data.map((l: ILiftOption) =>
-                                        <option key={l.Id} id={l.Id} value={l.Name}>{l.Name}</option>
-                                    )
-                                )}
-                            </select>
-                        </>
+                        <select onChange={(e) => setName(e.target.value)}
+                            className={`form-control ${liftOptionsQuery.status == "pending" ? "bg-warning" : liftOptionsQuery.status == "error" ? "text-danger" : ""}`}>
+                            {liftOptionsQuery.status === 'pending' ? (
+                                <option value="">Getting lift options...</option>
+                            ) : liftOptionsQuery.status === 'error' ? (
+                                <option value="">Something went wrong...</option>
+                            ) : (
+                                liftOptionsQuery.data.map((l: ILiftOption) =>
+                                    <option key={l.Id} id={l.Id} value={l.Name}>{l.Name}</option>
+                                )
+                            )}
+                        </select>
                     </div>
                 </div>
 
