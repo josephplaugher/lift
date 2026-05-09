@@ -40,7 +40,7 @@ export default function LiftSession() {
                     )}
                 </div>
             </div>
-            <div className="container-fluid py-3 border border-4 border-primary" style={{ bottom: "0", position: "absolute" }} data-testid="lift-session">
+            <div className="container-fluid py-3 border border-4 border-primary bg-light" style={{ bottom: "0", position: "absolute" }} data-testid="lift-session">
                 <div className="row pb-3" >
                     <div className="col">
                         <select onChange={(e) => setName(e.target.value)}
