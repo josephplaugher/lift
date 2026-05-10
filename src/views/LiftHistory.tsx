@@ -8,6 +8,8 @@ import { EUnits } from "../interfaces/IUnits.enum";
 import useGetToken from "../hooks/useGetToken";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { RechartsDevtools } from '@recharts/devtools';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendar, faRefresh } from "@fortawesome/free-solid-svg-icons";
 
 export default function LiftHistory({ name, setName }: { name: string, setName: Dispatch<SetStateAction<string>> }) {
     const [units, setUnits] = useState<EUnits>(EUnits.Kg);
@@ -23,10 +25,26 @@ export default function LiftHistory({ name, setName }: { name: string, setName: 
     })
 
     return (
-        // <div className="container-fluid">
-        //     <div className="row">
-        //         <div className="col">
-        <div>
+        <div className="container-fluid">
+            <div className="row mb-3">
+                <div className="col d-flex justify-content-between align-items-center text-center">
+                    <h2>{name}</h2>
+                    <button className="btn btn-primary btn-sm me-3"
+                        onClick={() => setStartDate(new Date(new Date().setDate(new Date().getDate() - 366)).toISOString().split("T")[0])}>
+                        <FontAwesomeIcon icon={faRefresh} />
+                    </button>
+                </div>
+                <div className="row d-flex justify-content-between align-items-center text-center">
+                    <div className="col-6">
+                        <input type="date" className="form-control form-control-sm" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                    </div>
+                    <div className="col-6 align-self-end">
+                        <input type="date" className="form-control form-control-sm" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+                    </div>
+                </div>
+            </div>
+            <div className="row">
+                <div className="col">
                     {q.status === 'pending' ? (
                         <LoadingIndicator />
                     ) : q.status === 'error' ? (
@@ -55,7 +73,7 @@ export default function LiftHistory({ name, setName }: { name: string, setName: 
                         </ResponsiveContainer>
                     )}
                 </div>
-        //     </div>
-        // </div>
+            </div>
+        </div>
     )
 }

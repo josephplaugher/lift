@@ -22,8 +22,11 @@ export default function LiftSession({ name, setName }: { name: string, setName: 
         units, setUnits,
         liftHistoryQuery,
         liftOptionsQuery, deleteOption,
-        selectedSet, setSelectedSet, handleChange, editing, setEditing, setConfirmDelete, confirmDeleteModalOpen, setConfirmDeleteModelOpen,
-        AddSets, UpdateSets, Weight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useLiftSession(name, setName)
+        selectedSet, setSelectedSet,
+        handleChange, editing, setEditing, setConfirmDelete,
+        confirmDeleteModalOpen, setConfirmDeleteModelOpen,
+        AddSets, UpdateSets, Weight, Set1, setSet1, Set2, setSet2,
+        Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useLiftSession(name, setName)
     return (
         <>
             <div className="container-fluid py-0 px-2" style={{ height: "90vh" }}>
@@ -51,7 +54,9 @@ export default function LiftSession({ name, setName }: { name: string, setName: 
                                 <option value="">Something went wrong...</option>
                             ) : (
                                 liftOptionsQuery.data.map((l: ILiftOption) =>
-                                    <option key={l.Id} id={l.Id} value={l.Name}>{l.Name}</option>
+                                    <option key={l.Id} id={l.Id} value={l.Name} selected={name == l.Name}>
+                                        {l.Name}
+                                    </option>
                                 )
                             )}
                         </select>
