@@ -9,7 +9,7 @@ import { EUnits } from "../interfaces/IUnits.enum";
 import useGetToken from "../hooks/useGetToken";
 import { FetchDelete } from "../utilities/Fetch";
 
-export default function useLiftSession(name: string, setName: Dispatch<SetStateAction<string>>) {
+export default function useLiftSession(name: string, setName: Dispatch<SetStateAction<string>>, units: EUnits, setUnits: Dispatch<SetStateAction<EUnits>>) {
     const token = useGetToken();
     const [error, setError] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
@@ -24,7 +24,6 @@ export default function useLiftSession(name: string, setName: Dispatch<SetStateA
     const [kg10, setKg10] = useState<number>(0);
     const [kg5, setKg5] = useState<number>(0);
     const [kg2_5, setKg2_5] = useState<number>(0);
-    const [units, setUnits] = useState<EUnits>(EUnits.Kg);
     const [editing, setEditing] = useState<boolean>(false);
     const [selectedSet, setSelectedSet] = useState<ILift>({
         Name: '',

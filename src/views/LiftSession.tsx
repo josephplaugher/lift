@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { Dispatch, SetStateAction } from "react";
 
-export default function LiftSession({ name, setName }: { name: string, setName: Dispatch<SetStateAction<string>> }) {
+export default function LiftSession({ name, setName, units, setUnits }: { name: string, setName: Dispatch<SetStateAction<string>>, units: EUnits, setUnits: Dispatch<SetStateAction<EUnits>> }) {
     const { error,
         loading,
         userMsg,
@@ -19,18 +19,17 @@ export default function LiftSession({ name, setName }: { name: string, setName: 
         kg10, setKg10,
         kg5, setKg5,
         kg2_5, setKg2_5,
-        units, setUnits,
         liftHistoryQuery,
         liftOptionsQuery, deleteOption,
         selectedSet, setSelectedSet,
         handleChange, editing, setEditing, setConfirmDelete,
         confirmDeleteModalOpen, setConfirmDeleteModelOpen,
         AddSets, UpdateSets, Weight, Set1, setSet1, Set2, setSet2,
-        Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useLiftSession(name, setName)
+        Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useLiftSession(name, setName, units, setUnits)
     return (
         <>
             <div className="container-fluid py-0 px-2" style={{ height: "90vh" }}>
-                <button className="toggle-btn btn btn-secondary p-2" onClick={() => { units == EUnits.Kg ? setUnits(EUnits.Lbs) : setUnits(EUnits.Kg) }}>
+                <button className="toggle-btn btn btn-sm btn-primary px-2 pb-1" onClick={() => { units == EUnits.Kg ? setUnits(EUnits.Lbs) : setUnits(EUnits.Kg) }}>
                     {units}
                 </button>
                 <div className="row overflow-auto p-2" style={{ height: "58vh" }}>

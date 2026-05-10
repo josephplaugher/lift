@@ -6,6 +6,7 @@ import UserProfile from "./UserProfile";
 import { useAuth0, User } from "@auth0/auth0-react";
 import usePayment from "../hooks/usePayment";
 import { ESubscriptionStatusEnum } from "../interfaces/ISubscriptionStatus.enum";
+import { EUnits } from "../interfaces/IUnits.enum";
 
 enum ITabOptions {
     Lift = "Lift",
@@ -22,7 +23,8 @@ export default function Authenticated({ user }: TLiftParams) {
     const { logout } = useAuth0()
     const { subscribe, paid } = usePayment(user.sub!);
     const [name, setName] = useState<string>("Deadlift");
-
+    const [units, setUnits] = useState<EUnits>(EUnits.Kg);
+    
     if (paid == ESubscriptionStatusEnum.Active || paid == ESubscriptionStatusEnum.Trialing) return (
         <>
             <div className="container-fluid p-0">
@@ -50,8 +52,8 @@ export default function Authenticated({ user }: TLiftParams) {
                 </div>
             </div>
             <div>
-                {tab == ITabOptions.Lift && <LiftSession name={name} setName={setName} />}
-                {tab == ITabOptions.LiftHistory && <LiftHistory name={name} setName={setName} />}
+                {tab == ITabOptions.Lift && <LiftSession name={name} setName={setName} units={units} setUnits={setUnits} />}
+                {tab == ITabOptions.LiftHistory && <LiftHistory name={name} setName={setName} units={units} setUnits={setUnits} />}
                 {tab == ITabOptions.LiftOptions && <LiftOptions />}
                 {tab == ITabOptions.Me && <UserProfile user={user} logout={logout} subscribe={subscribe} paid={paid} />}
             </div>
