@@ -33,13 +33,13 @@ export default function LiftHistory({ name, setName: _setName, units, setUnits }
         <div className="container-fluid px-0">
             <div className="row mb-3 g-0">
                 <div className="col d-flex justify-content-between align-items-center text-center">
-                    <h2>{name}</h2>
+                    <h2 className="ms-2">{name}</h2>
                     <div>
                         <button className="btn btn-primary btn-sm me-3"
                             onClick={() => setStartDate(new Date(new Date().setDate(new Date().getDate() - 366)).toISOString().split("T")[0])}>
                             <FontAwesomeIcon icon={faRefresh} />
                         </button>
-                        <button className="btn btn-primary btn-sm" onClick={() => { units == EUnits.Kg ? setUnits(EUnits.Lbs) : setUnits(EUnits.Kg) }}>
+                        <button className="btn btn-primary btn-sm me-3" onClick={() => { units == EUnits.Kg ? setUnits(EUnits.Lbs) : setUnits(EUnits.Kg) }}>
                             {units}
                         </button>
                     </div>
@@ -48,7 +48,7 @@ export default function LiftHistory({ name, setName: _setName, units, setUnits }
             <div className="row mb-5">
                 <div className="row d-flex justify-content-between align-items-center text-center">
                     <div className="col-6">
-                        <input type="date" className="form-control form-control-sm" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                        <input type="date" className="form-control form-control-sm ms-2" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
                     </div>
                     <div className="col-6 align-self-end">
                         <input type="date" className="form-control form-control-sm" value={endDate} onChange={(e) => setEndDate(e.target.value)} />

@@ -32,7 +32,7 @@ export default function LiftOptions() {
                 <div className="row">
                     <div className={`d-flex justify-content-between py-2 ${editing && "border border-2 border-warning"}`} data-testid="add-options">
                         <div className="">
-                            <input className="w-auto form-control control-sm" name="Name" value={name}
+                            <input className="w-auto form-control control-sm" name="Name" value={name} size={12}
                                 onChange={(e) => setName(e.target.value)} placeholder="Lift Name..." required></input>
                         </div>
                         <div className="align-items-end mt-1" title="Check if this lift requires a barbell. I.E. deadlift vs kettlebell deadlift">

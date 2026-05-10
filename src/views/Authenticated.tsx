@@ -22,7 +22,7 @@ export default function Authenticated({ user }: TLiftParams) {
     const [tab, setTab] = useState<ITabOptions>(ITabOptions.Lift)
     const { logout } = useAuth0()
     const { subscribe, paid } = usePayment(user.sub!);
-    const [name, setName] = useState<string>("Deadlift");
+    const [name, setName] = useState<string>("");
     const [units, setUnits] = useState<EUnits>(EUnits.Kg);
     
     if (paid == ESubscriptionStatusEnum.Active || paid == ESubscriptionStatusEnum.Trialing) return (
