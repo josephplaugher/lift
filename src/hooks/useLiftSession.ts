@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import ILift from "../interfaces/ILift.interface";
 import ILiftOption from "../interfaces/LiftOptions.interfaces";
 import { useQuery } from "@tanstack/react-query";
@@ -9,12 +9,11 @@ import { EUnits } from "../interfaces/IUnits.enum";
 import useGetToken from "../hooks/useGetToken";
 import { FetchDelete } from "../utilities/Fetch";
 
-export default function useLiftSession() {
+export default function useLiftSession(name: string, setName: Dispatch<SetStateAction<string>>) {
     const token = useGetToken();
     const [error, setError] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const [userMsg, setUserMsg] = useState<string>("");
-    const [Name, setName] = useState<string>("");
 
     const [confirmDeleteModalOpen, setConfirmDeleteModelOpen] = useState<boolean>(false);
     const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
@@ -33,9 +32,10 @@ export default function useLiftSession() {
         Date: '',
         Set1: 0,
     });
-    const liftHistoryQuery = useQuery<ILift[]>({ enabled: token != "", queryKey: ['liftHistory', Name], queryFn: () => GetLiftHistory(token, Name) })
+    const liftHistoryQuery = useQuery<ILift[]>({ enabled: token != "", queryKey: ['liftHistory', name], queryFn: () => GetLiftHistory(token, name) })
     const liftOptionsQuery = useQuery<ILiftOption[]>({ enabled: token != "", queryKey: ['liftOptions'], queryFn: () => GetLiftOptions(token) })
-    const { AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useAddSets(liftHistoryQuery, Name, setUserMsg, setError, setLoading, selectedSet);
+    const { AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, 
+        Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useAddSets(liftHistoryQuery, name, setUserMsg, setError, setLoading, selectedSet);
 
     useEffect(() => {
         const w: number = ((kg202 + kg20 + kg15 + kg10 + kg5 + kg2_5) * 2) + 20;
@@ -86,7 +86,6 @@ export default function useLiftSession() {
         error, setError,
         loading, setLoading,
         userMsg, setUserMsg,
-        Name, setName,
         kg202, setKg202,
         kg20, setKg20,
         kg15, setKg15,

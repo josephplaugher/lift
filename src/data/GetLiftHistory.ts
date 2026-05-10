@@ -10,3 +10,12 @@ export default async function GetLiftHistory(token: string, liftName: string | u
         throw new Error("Error fetching lift history")
     }
 }
+
+export async function GetLiftHistoryGrouped(token: string, name: string, startDate: string, endDate: string): Promise<any> {
+    const response = await FetchGet(`lift/history/grouped?name=${name}&startDate=${startDate}&endDate=${endDate}`, token)
+    if (response.ok) {
+        return await response.json()
+    } else {
+        throw new Error("Error fetching lift history")
+    }
+}

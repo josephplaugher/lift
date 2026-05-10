@@ -21,6 +21,7 @@ export default function Authenticated({ user }: TLiftParams) {
     const [tab, setTab] = useState<ITabOptions>(ITabOptions.Lift)
     const { logout } = useAuth0()
     const { subscribe, paid } = usePayment(user.sub!);
+    const [name, setName] = useState<string>("Deadlift");
 
     if (paid == ESubscriptionStatusEnum.Active || paid == ESubscriptionStatusEnum.Trialing) return (
         <>
@@ -49,8 +50,8 @@ export default function Authenticated({ user }: TLiftParams) {
                 </div>
             </div>
             <div>
-                {tab == ITabOptions.Lift && <LiftSession />}
-                {tab == ITabOptions.LiftHistory && <LiftHistory />}
+                {tab == ITabOptions.Lift && <LiftSession name={name} setName={setName} />}
+                {tab == ITabOptions.LiftHistory && <LiftHistory name={name} setName={setName} />}
                 {tab == ITabOptions.LiftOptions && <LiftOptions />}
                 {tab == ITabOptions.Me && <UserProfile user={user} logout={logout} subscribe={subscribe} paid={paid} />}
             </div>

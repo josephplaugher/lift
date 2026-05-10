@@ -7,12 +7,12 @@ import ConvertUnits from "../utilities/ConvertUnits";
 import useLiftSession from "../hooks/useLiftSession";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { Dispatch, SetStateAction } from "react";
 
-export default function LiftSession() {
+export default function LiftSession({ name, setName }: { name: string, setName: Dispatch<SetStateAction<string>> }) {
     const { error,
         loading,
         userMsg,
-        Name, setName,
         kg202, setKg202,
         kg20, setKg20,
         kg15, setKg15,
@@ -23,7 +23,7 @@ export default function LiftSession() {
         liftHistoryQuery,
         liftOptionsQuery, deleteOption,
         selectedSet, setSelectedSet, handleChange, editing, setEditing, setConfirmDelete, confirmDeleteModalOpen, setConfirmDeleteModelOpen,
-        AddSets, UpdateSets, Weight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useLiftSession()
+        AddSets, UpdateSets, Weight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useLiftSession(name, setName)
     return (
         <>
             <div className="container-fluid py-0 px-2" style={{ height: "90vh" }}>
@@ -61,7 +61,7 @@ export default function LiftSession() {
                 <div className="row">
                     <div className="col">
                         <form onSubmit={(e) => AddSets(e)}>
-                            <input name="name" value={Name} hidden onChange={() => { }}></input>
+                            <input name="name" value={name} hidden onChange={() => { }}></input>
                             <div className="d-flex justify-content-between align-items-center">
                                 <div className={`btn ${kg202 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg202 == 0 ? setKg202(20) : setKg202(0)}><small>{ConvertUnits(units, 20)}</small></div>
                                 <div className={`btn ${kg20 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg20 == 0 ? setKg20(20) : setKg20(0)}><small>{ConvertUnits(units, 20)}</small></div>

@@ -1,31 +1,61 @@
-import ILift from "../interfaces/ILift.interface";
+import ILift, { ILiftGraphable } from "../interfaces/ILift.interface";
 import LiftHistoryTable from "../components/LiftHistoryTable";
 import { useQuery } from "@tanstack/react-query";
-import GetLiftHistory from "../data/GetLiftHistory";
+import GetLiftHistory, { GetLiftHistoryGrouped } from "../data/GetLiftHistory";
 import { ErrorIndicator, LoadingIndicator } from "../components/StatusIndicators";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { EUnits } from "../interfaces/IUnits.enum";
 import useGetToken from "../hooks/useGetToken";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { RechartsDevtools } from '@recharts/devtools';
 
-export default function LiftHistory() {
+export default function LiftHistory({ name, setName }: { name: string, setName: Dispatch<SetStateAction<string>> }) {
     const [units, setUnits] = useState<EUnits>(EUnits.Kg);
     const token = useGetToken();
-    const liftHistoryQuery = useQuery<ILift[]>({ enabled: token != "", queryKey: ['liftHistory', "all"], queryFn: () => GetLiftHistory(token) })
+    const [startDate, setStartDate] = useState<string>(
+        new Date(new Date().setDate(new Date().getDate() - 366)).toISOString().split("T")[0]);
+    const [endDate, setEndDate] = useState<string>(new Date().toISOString().split("T")[0]);
+
+    const q = useQuery<ILiftGraphable[]>({
+        enabled: token != "",
+        queryKey: ['liftHistoryGrouped', name, startDate, endDate],
+        queryFn: () => GetLiftHistoryGrouped(token, name, startDate, endDate)
+    })
 
     return (
-        <div className="container-fluid py-0 px-2" style={{ height: "90vh" }} data-testid="lift-history">
-            <button className="toggle-btn btn btn-secondary p-2" onClick={() => { units == EUnits.Kg ? setUnits(EUnits.Lbs) : setUnits(EUnits.Kg) }}>
-                {units}
-            </button>
-            <div className="row overflow-auto h-100 p-2">
-                {liftHistoryQuery.status === 'pending' ? (
-                    <LoadingIndicator />
-                ) : liftHistoryQuery.status === 'error' ? (
-                    <ErrorIndicator error={liftHistoryQuery.error.message} />
-                ) : (
-                    <LiftHistoryTable lifts={liftHistoryQuery.data} units={units}/>
-                )}
-            </div>
-        </div>
+        // <div className="container-fluid">
+        //     <div className="row">
+        //         <div className="col">
+        <div>
+                    {q.status === 'pending' ? (
+                        <LoadingIndicator />
+                    ) : q.status === 'error' ? (
+                        <ErrorIndicator error={q.error.message} />
+                    ) : (
+                        q.data && q.data.length > 0 &&
+                        <ResponsiveContainer width="100%" height={300} aspect={1}>
+                            <LineChart
+                                data={q.data}
+                                margin={{ top: 5, right: 10, left: 10, bottom: 5 }} // negative left margin to reclaim space from YAxis
+                            >
+                                <XAxis dataKey="Date" stroke="red" tick={{ fontSize: 10 }} tickCount={4} />
+                                <YAxis stroke="red" tick={{ fontSize: 10 }} width={30} />
+                                <Tooltip
+                                    cursor={{ stroke: 'blue' }}
+                                    contentStyle={{
+                                        backgroundColor: 'gray',
+                                        borderColor: 'blue',
+                                        fontSize: 12,
+                                    }}
+                                />
+                                <Legend wrapperStyle={{ fontSize: 12 }} />
+                                <Line type="monotone" dataKey={"Load"} stroke="green" dot={false} activeDot={{ r: 6, stroke: 'blue' }} />
+                                <RechartsDevtools />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    )}
+                </div>
+        //     </div>
+        // </div>
     )
 }
