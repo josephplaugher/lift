@@ -9,3 +9,8 @@ export default interface ILift {
     Set4?: number;
     Set5?: number;
 }
+
+export interface ILiftGraphable {
+    Date: string;
+    Load: number;
+}

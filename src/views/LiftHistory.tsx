@@ -1,29 +1,108 @@
-import ILift from "../interfaces/ILift.interface";
-import LiftHistoryTable from "../components/LiftHistoryTable";
+import { ILiftGraphable } from "../interfaces/ILift.interface";
 import { useQuery } from "@tanstack/react-query";
-import GetLiftHistory from "../data/GetLiftHistory";
+import { GetLiftHistoryGrouped } from "../data/GetLiftHistory";
 import { ErrorIndicator, LoadingIndicator } from "../components/StatusIndicators";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { EUnits } from "../interfaces/IUnits.enum";
+import useGetToken from "../hooks/useGetToken";
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { RechartsDevtools } from '@recharts/devtools';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRefresh } from "@fortawesome/free-solid-svg-icons";
+import ConvertUnits from "../utilities/ConvertUnits";
 
-export default function LiftHistory() {
-    const [units, setUnits] = useState<EUnits>(EUnits.Kg);
+const chartHeight = Math.round(window.innerHeight * 0.50);
 
-    const liftHistoryQuery = useQuery<ILift[]>({ queryKey: ['liftHistory', "all"], queryFn: () => GetLiftHistory() })
+export default function LiftHistory({ name, setName: _setName, units, setUnits }: { name: string, setName: Dispatch<SetStateAction<string>>, units: EUnits, setUnits: Dispatch<SetStateAction<EUnits>> }) {
+    const token = useGetToken();
+    const [startDate, setStartDate] = useState<string>(
+        new Date(new Date().setDate(new Date().getDate() - 366)).toISOString().split("T")[0]);
+    const [endDate, setEndDate] = useState<string>(new Date().toISOString().split("T")[0]);
+
+    const q = useQuery<ILiftGraphable[]>({
+        enabled: token != "",
+        queryKey: ['liftHistoryGrouped', name, startDate, endDate],
+        queryFn: () => GetLiftHistoryGrouped(token, name, startDate, endDate),
+        select: (data: ILiftGraphable[]) => data.map((row: ILiftGraphable) => ({
+            Date: row.Date,
+            Load: units === EUnits.Lbs ? ConvertUnits(units, Number(row.Load)) : Number(row.Load) as number
+        })) as ILiftGraphable[]
+    })
 
     return (
-        <div className="container-fluid py-0 px-2" style={{ height: "90vh" }} data-testid="lift-history">
-            <button className="toggle-btn btn btn-secondary p-2" onClick={() => { units == EUnits.Kg ? setUnits(EUnits.Lbs) : setUnits(EUnits.Kg) }}>
-                {units}
-            </button>
-            <div className="row overflow-auto h-100 p-2">
-                {liftHistoryQuery.status === 'pending' ? (
-                    <LoadingIndicator />
-                ) : liftHistoryQuery.status === 'error' ? (
-                    <ErrorIndicator error={liftHistoryQuery.error.message} />
-                ) : (
-                    <LiftHistoryTable lifts={liftHistoryQuery.data} units={units}/>
-                )}
+        <div className="container-fluid px-0">
+            <div className="row mb-3 g-0">
+                <div className="col d-flex justify-content-between align-items-center text-center">
+                    <h2 className="ms-2">{name}</h2>
+                    <div>
+                        <button className="btn btn-primary btn-sm me-3"
+                            onClick={() => setStartDate(new Date(new Date().setDate(new Date().getDate() - 366)).toISOString().split("T")[0])}>
+                            <FontAwesomeIcon icon={faRefresh} />
+                        </button>
+                        <button className="btn btn-primary btn-sm me-3" onClick={() => { units == EUnits.Kg ? setUnits(EUnits.Lbs) : setUnits(EUnits.Kg) }}>
+                            {units}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div className="row mb-5">
+                <div className="row d-flex justify-content-between align-items-center text-center">
+                    <div className="col-6">
+                        <input type="date" className="form-control form-control-sm ms-2" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                    </div>
+                    <div className="col-6 align-self-end">
+                        <input type="date" className="form-control form-control-sm" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+                    </div>
+                </div>
+            </div>
+            <div className="row">
+                <div className="col min-w-0">
+                    {q.status === 'pending' ? (
+                        <LoadingIndicator />
+                    ) : q.status === 'error' ? (
+                        <ErrorIndicator error={q.error.message} />
+                    ) : (
+                        q.data && q.data.length > 0 &&
+                        <ResponsiveContainer width="100%" height={chartHeight} aspect={1}>
+                            <LineChart
+                                data={q.data}
+                                margin={{ top: 5, right: 70, left: 15, bottom: 5 }} // negative left margin to reclaim space from YAxis
+                            >
+                                <XAxis dataKey="Date" stroke="#060b47" tick={{ fontSize: 10 }} tickCount={4} />
+                                <YAxis stroke="#060b47" tick={{ fontSize: 10 }} width={30} />
+                                <Tooltip
+                                    content={({ active, payload, label }) => {
+                                        if (!active || !payload?.length) return null;
+                                        return (
+                                            <div style={{
+                                                backgroundColor: 'grey',
+                                                border: '1px solid #060b47',
+                                                padding: '8px 12px',
+                                                borderRadius: 6,
+                                                fontSize: 12,
+                                                color: '#060b47',
+                                                opacity: 0.8,
+                                            }}>
+                                                <p>{label}</p>
+                                                {payload.map((entry, i) => (
+                                                    <>
+                                                        <p key={i}>
+                                                            {entry.name}: {entry.value} 
+                                                        </p>
+                                                        <p key={i}><small><em>Weight x the Sum of Sets</em></small></p>
+                                                    </>
+                                                ))}
+                                            </div>
+                                        );
+                                    }}
+                                />
+                                <Legend wrapperStyle={{ fontSize: 12 }} />
+                                <Line type="monotone" dataKey={"Load"} stroke="#060b47" dot={false} activeDot={{ r: 6, stroke: '#060b47' }} />
+                                <RechartsDevtools />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    )}
+                </div>
             </div>
         </div>
     )
