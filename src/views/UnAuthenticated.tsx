@@ -1,12 +1,12 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import barbell from "../images/barbell.webp";
+import barbell from "../images/barbell.svg";
 
 export default function UnAuthenticated() {
     const { loginWithRedirect } = useAuth0()
     return (
         <div className="d-flex flex-column justify-content-center align-items-center text-center vh-100">
             <h1 className='text-primary' style={{fontSize: "3em"}}><em><strong>Lift!</strong></em></h1>
-            <div className='bg-primary'><img src={barbell} width={"300px"} /></div>
+            <div><img src={barbell} width={"300px"} /></div>
             <div className="d-flex justify-content-around w-100">
                 <button className="btn btn-primary align-self-center my-2 p-3"
                     onClick={() => loginWithRedirect({
@@ -14,7 +14,7 @@ export default function UnAuthenticated() {
                             scope: 'openid profile email offline_access'
                         }
                     })}>Sign In</button>
-                <button className="btn btn-primary align-self-center p-3"
+                <button className="btn border-primary text-primary align-self-center p-3"
                     onClick={() => loginWithRedirect({
                         authorizationParams: {
                             screen_hint: "signup",

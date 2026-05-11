@@ -9,7 +9,7 @@ import { EUnits } from "../interfaces/IUnits.enum";
 import useGetToken from "../hooks/useGetToken";
 import { FetchDelete } from "../utilities/Fetch";
 
-export default function useLiftSession(name: string, setName: Dispatch<SetStateAction<string>>, units: EUnits, setUnits: Dispatch<SetStateAction<EUnits>>) {
+export default function useLiftSession(name: string, units: EUnits, setUnits: Dispatch<SetStateAction<EUnits>>) {
     const token = useGetToken();
     const [error, setError] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
@@ -18,6 +18,8 @@ export default function useLiftSession(name: string, setName: Dispatch<SetStateA
     const [confirmDeleteModalOpen, setConfirmDeleteModelOpen] = useState<boolean>(false);
     const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
 
+    const [kg252, setKg252] = useState<number>(0);
+    const [kg25, setKg25] = useState<number>(0);
     const [kg202, setKg202] = useState<number>(0);
     const [kg20, setKg20] = useState<number>(0);
     const [kg15, setKg15] = useState<number>(0);
@@ -31,22 +33,30 @@ export default function useLiftSession(name: string, setName: Dispatch<SetStateA
         Date: '',
         Set1: 0,
     });
+    const [isBarbellLift, setIsBarbellLift] = useState<boolean>(true);
+
     const liftHistoryQuery = useQuery<ILift[]>({ enabled: token != "", queryKey: ['liftHistory', name], queryFn: () => GetLiftHistory(token, name) })
     const liftOptionsQuery = useQuery<ILiftOption[]>({ enabled: token != "", queryKey: ['liftOptions'], queryFn: () => GetLiftOptions(token) })
     const { AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, 
         Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useAddSets(liftHistoryQuery, name, setUserMsg, setError, setLoading, selectedSet);
 
     useEffect(() => {
-        const w: number = ((kg202 + kg20 + kg15 + kg10 + kg5 + kg2_5) * 2) + 20;
+        const w: number = ((kg252 + kg25 + kg202 + kg20 + kg15 + kg10 + kg5 + kg2_5) * 2) + 20;
         setWeight(w)
-    }, [setWeight, kg202, kg20, kg15, kg10, kg5, kg2_5])
+    }, [setWeight, kg252, kg25, kg202, kg20, kg15, kg10, kg5, kg2_5])
 
     useEffect(() => {
         if (!selectedSet.Name) return;
         setEditing(true);
     }, [selectedSet])
 
-    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    useEffect(() => {
+        if(!liftOptionsQuery.data || name == "") return;
+        const selectedLift = liftOptionsQuery.data?.find((l: ILiftOption) => l.Name === name);
+        setIsBarbellLift(selectedLift?.IsBarbellLift ?? false);
+    }, [name, liftOptionsQuery.data])
+
+    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {``
         const { name, value, type } = e.target;
         setSelectedSet(prev => ({
             ...prev,
@@ -85,6 +95,8 @@ export default function useLiftSession(name: string, setName: Dispatch<SetStateA
         error, setError,
         loading, setLoading,
         userMsg, setUserMsg,
+        kg252, setKg252,
+        kg25, setKg25,
         kg202, setKg202,
         kg20, setKg20,
         kg15, setKg15,
@@ -95,6 +107,7 @@ export default function useLiftSession(name: string, setName: Dispatch<SetStateA
         liftHistoryQuery, deleteOption,
         liftOptionsQuery, confirmDelete, setConfirmDelete, confirmDeleteModalOpen, setConfirmDeleteModelOpen,
         selectedSet, setSelectedSet, handleChange, editing, setEditing,
-        AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5
+        AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5,
+        isBarbellLift
     }
 }

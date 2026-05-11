@@ -13,6 +13,8 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
     const { error,
         loading,
         userMsg,
+        kg252, setKg252,
+        kg25, setKg25,
         kg202, setKg202,
         kg20, setKg20,
         kg15, setKg15,
@@ -24,8 +26,8 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
         selectedSet, setSelectedSet,
         handleChange, editing, setEditing, setConfirmDelete,
         confirmDeleteModalOpen, setConfirmDeleteModelOpen,
-        AddSets, UpdateSets, Weight, Set1, setSet1, Set2, setSet2,
-        Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useLiftSession(name, setName, units, setUnits)
+        AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2,
+        Set3, setSet3, Set4, setSet4, Set5, setSet5, isBarbellLift } = useLiftSession(name, units, setUnits)
     return (
         <>
             <div className="container-fluid py-0 px-2" style={{ height: "90vh" }}>
@@ -44,40 +46,41 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
             </div>
             <div className="container-fluid py-3 border border-4 border-primary bg-light" style={{ bottom: "0", position: "absolute" }} data-testid="lift-session">
                 <div className="row pb-3" >
-                    <div className="col">
-                        <select onChange={(e) => setName(e.target.value)}
-                            className={`form-control ${liftOptionsQuery.status == "pending" ? "bg-warning" : liftOptionsQuery.status == "error" ? "text-danger" : ""}`}>
+                    <div className="col-9">
+                        <select onChange={(e) => setName(e.target.value)} defaultValue={liftOptionsQuery.data?.[0].Name}
+                            className={`form-control form-control-sm ${liftOptionsQuery.status == "pending" ? "bg-warning" : liftOptionsQuery.status == "error" ? "text-danger" : ""}`}>
                             {liftOptionsQuery.status === 'pending' ? (
                                 <option value="">Getting lift options...</option>
                             ) : liftOptionsQuery.status === 'error' ? (
                                 <option value="">Something went wrong...</option>
                             ) : (
                                 liftOptionsQuery.data.map((l: ILiftOption) =>
-                                    <option key={l.Id} id={l.Id} value={l.Name} selected={name == l.Name}>
+                                    <option key={l.Id} id={l.Id} value={l.Name}>
                                         {l.Name}
                                     </option>
                                 )
                             )}
                         </select>
                     </div>
+                    <div className="col-2">
+                        <input type="number" style={liftInputStyle} name="Weight" placeholder="Weight"
+                            value={ConvertUnits(units, Number(Weight))} onChange={(e) => setWeight(parseInt(e.target.value))} />
+                    </div>
                 </div>
 
                 <div className="row">
                     <div className="col">
                         <form onSubmit={(e) => AddSets(e)}>
-                            <input name="name" value={name} hidden onChange={() => { }}></input>
-                            <div className="d-flex justify-content-between align-items-center">
+                            <input name="name" value={name} hidden onChange={() => { }} />
+                            {isBarbellLift && <div className="d-flex justify-content-between align-items-center">
+                                <div className={`btn ${kg252 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg252 == 0 ? setKg252(25) : setKg252(0)}><small>{ConvertUnits(units, 25)}</small></div>   
+                                <div className={`btn ${kg25 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg25 == 0 ? setKg25(25) : setKg25(0)}><small>{ConvertUnits(units, 25)}</small></div>
                                 <div className={`btn ${kg202 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg202 == 0 ? setKg202(20) : setKg202(0)}><small>{ConvertUnits(units, 20)}</small></div>
                                 <div className={`btn ${kg20 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg20 == 0 ? setKg20(20) : setKg20(0)}><small>{ConvertUnits(units, 20)}</small></div>
                                 <div className={`btn ${kg15 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg15 == 0 ? setKg15(15) : setKg15(0)}><small>{ConvertUnits(units, 15)}</small></div>
                                 <div className={`btn ${kg10 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg10 == 0 ? setKg10(10) : setKg10(0)}><small>{ConvertUnits(units, 10)}</small></div>
                                 <div className={`btn ${kg5 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg5 == 0 ? setKg5(5) : setKg5(0)}><small>{ConvertUnits(units, 5)}</small></div>
-                                <div className={`btn ${kg2_5 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg2_5 == 0 ? setKg2_5(2.5) : setKg2_5(0)}><small>{ConvertUnits(units, 2.5)}</small></div>
-                                <div style={inputgroup}>
-                                    <input type="number" style={liftInputStyle} name="Weight" placeholder="Weight"
-                                        value={ConvertUnits(units, Number(Weight))} readOnly></input>
-                                </div>
-                            </div>
+                            </div>}
                             <div className="d-flex justify-content-between py-3">
                                 <div style={inputgroup}>
                                     <label htmlFor="Set1">Set 1</label>
