@@ -9,4 +9,11 @@ export default defineConfig({
     environment: 'jsdom', // required for DOM testing
     setupFiles: './setupTests.tsx',
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        silenceDeprecations: ['color-functions', 'import']
+      }
+    }
+  }
 })
