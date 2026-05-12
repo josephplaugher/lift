@@ -13,7 +13,7 @@ import ConvertUnits from "../utilities/ConvertUnits";
 
 const chartHeight = Math.round(window.innerHeight * 0.50);
 
-export default function LiftHistory({ name, setName: _setName, units, setUnits }: { name: string, setName: Dispatch<SetStateAction<string>>, units: EUnits, setUnits: Dispatch<SetStateAction<EUnits>> }) {
+export default function LiftHistory({ name, units, setUnits }: { name: string, units: EUnits, setUnits: Dispatch<SetStateAction<EUnits>> }) {
     const token = useGetToken();
     const [startDate, setStartDate] = useState<string>(
         new Date(new Date().setDate(new Date().getDate() - 366)).toISOString().split("T")[0]);
