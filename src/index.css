@@ -1,7 +1,39 @@
-html, body {margin: 0; height: 100%; overflow: hidden}
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden
+}
 
 .toggle-btn {
   position: absolute;
   top: 65px;
   right: 5px;
+}
+
+.btn-lift {
+  background-color: #060b47 !important;
+  border-color: #060b47 !important;
+}
+
+.btn-lift:hover {
+  background-color: #060b47 !important;
+  border-color: #060b47 !important;
+}
+
+.btn-lift:focus {
+  background-color: #060b47 !important;
+  border-color: #060b47 !important;
+}
+
+.text-lift {
+  color: #060b47 !important;
+}
+
+.bg-lift {
+  background-color: #060b47 !important;
+}
+
+.btn-lift svg {
+  color: white !important;
 }

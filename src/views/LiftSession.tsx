@@ -31,7 +31,7 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
     return (
         <>
             <div className="container-fluid py-0 px-2" style={{ height: "90vh" }}>
-                <button className="toggle-btn btn btn-sm btn-primary px-2 pb-1" onClick={() => { units == EUnits.Kg ? setUnits(EUnits.Lbs) : setUnits(EUnits.Kg) }}>
+                <button className="toggle-btn btn btn-sm btn-lift px-2 pb-1" onClick={() => { units == EUnits.Kg ? setUnits(EUnits.Lbs) : setUnits(EUnits.Kg) }}>
                     {units}
                 </button>
                 <div className="row overflow-auto p-2" style={{ height: "58vh" }}>
@@ -44,7 +44,7 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
                     )}
                 </div>
             </div>
-            <div className="container-fluid py-3 border border-4 border-primary bg-light" style={{ bottom: "0", position: "absolute" }} data-testid="lift-session">
+            <div className="container-fluid py-3 border border-4 border-lift bg-light" style={{ bottom: "0", position: "absolute" }} data-testid="lift-session">
                 <div className="row pb-3" >
                     <div className="col-9">
                         <select onChange={(e) => setName(e.target.value)} defaultValue={liftOptionsQuery.data?.[0].Name}
@@ -73,14 +73,14 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
                         <form onSubmit={(e) => AddSets(e)}>
                             <input name="name" value={name} hidden onChange={() => { }} />
                             {isBarbellLift && <div className="d-flex justify-content-between align-items-center">
-                                <div className={`btn ${kg252 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg252 == 0 ? setKg252(25) : setKg252(0)}><small>{ConvertUnits(units, 25)}</small></div>   
-                                <div className={`btn ${kg25 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg25 == 0 ? setKg25(25) : setKg25(0)}><small>{ConvertUnits(units, 25)}</small></div>
-                                <div className={`btn ${kg202 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg202 == 0 ? setKg202(20) : setKg202(0)}><small>{ConvertUnits(units, 20)}</small></div>
-                                <div className={`btn ${kg20 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg20 == 0 ? setKg20(20) : setKg20(0)}><small>{ConvertUnits(units, 20)}</small></div>
-                                <div className={`btn ${kg15 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg15 == 0 ? setKg15(15) : setKg15(0)}><small>{ConvertUnits(units, 15)}</small></div>
-                                <div className={`btn ${kg10 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg10 == 0 ? setKg10(10) : setKg10(0)}><small>{ConvertUnits(units, 10)}</small></div>
-                                <div className={`btn ${kg5 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg5 == 0 ? setKg5(5) : setKg5(0)}><small>{ConvertUnits(units, 5)}</small></div>
-                                <div className={`btn ${kg2_5 == 0 ? "btn-secondary" : "btn-primary"}`} onClick={() => kg2_5 == 0 ? setKg2_5(2.5) : setKg2_5(0)}><small>{ConvertUnits(units, 2.5)}</small></div>
+                                <div className={`btn ${kg252 == 0 ? "btn-secondary" : "btn-lift"}`} onClick={() => kg252 == 0 ? setKg252(25) : setKg252(0)}><small>{ConvertUnits(units, 25)}</small></div>   
+                                <div className={`btn ${kg25 == 0 ? "btn-secondary" : "btn-lift"}`} onClick={() => kg25 == 0 ? setKg25(25) : setKg25(0)}><small>{ConvertUnits(units, 25)}</small></div>
+                                <div className={`btn ${kg202 == 0 ? "btn-secondary" : "btn-lift"}`} onClick={() => kg202 == 0 ? setKg202(20) : setKg202(0)}><small>{ConvertUnits(units, 20)}</small></div>
+                                <div className={`btn ${kg20 == 0 ? "btn-secondary" : "btn-lift"}`} onClick={() => kg20 == 0 ? setKg20(20) : setKg20(0)}><small>{ConvertUnits(units, 20)}</small></div>
+                                <div className={`btn ${kg15 == 0 ? "btn-secondary" : "btn-lift"}`} onClick={() => kg15 == 0 ? setKg15(15) : setKg15(0)}><small>{ConvertUnits(units, 15)}</small></div>
+                                <div className={`btn ${kg10 == 0 ? "btn-secondary" : "btn-lift"}`} onClick={() => kg10 == 0 ? setKg10(10) : setKg10(0)}><small>{ConvertUnits(units, 10)}</small></div>
+                                <div className={`btn ${kg5 == 0 ? "btn-secondary" : "btn-lift"}`} onClick={() => kg5 == 0 ? setKg5(5) : setKg5(0)}><small>{ConvertUnits(units, 5)}</small></div>
+                                <div className={`btn ${kg2_5 == 0 ? "btn-secondary" : "btn-lift"}`} onClick={() => kg2_5 == 0 ? setKg2_5(2.5) : setKg2_5(0)}><small>{ConvertUnits(units, 2.5)}</small></div>
                             </div>}
                             <div className="d-flex justify-content-between py-3">
                                 <div style={inputgroup}>
@@ -105,16 +105,16 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
                                 </div>
                             </div>
                             <div className="">
-                                <button type="submit" className="btn btn-primary w-100 p-3">Add Sets</button>
+                                <button type="submit" className="btn btn-lift text-white w-100 p-3">Add Sets</button>
                             </div>
                         </form>
                         {error && <p>{error}</p>}
-                        {userMsg && <p className="text-primary text-center fw-bold p-3">{userMsg} <FontAwesomeIcon icon={faCheck} className="text-success" /></p>}
+                        {userMsg && <p className="text-lift text-center fw-bold p-3">{userMsg} <FontAwesomeIcon icon={faCheck} className="text-success" /></p>}
                     </div>
                 </div>
             </div >
             {editing &&
-                <dialog open className="border border-3 border-primary" style={{ top: "80%" }}>
+                <dialog open className="border border-3 border-lift" style={{ top: "80%" }}>
                     <form onSubmit={(e) => UpdateSets(e)}>
                         <input name="Name" value={selectedSet.Name} hidden onChange={() => { }}></input>
                         <div style={inputgroup}>
@@ -147,7 +147,7 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
                             </div>
                         </div>
                         <div className="d-flex justify-content-around">
-                            <button type="submit" className="btn btn-primary w-100 p-3 m-2">Save Change</button>
+                            <button type="submit" className="btn btn-lift w-100 p-3 m-2">Save Change</button>
                             <p className="btn btn-danger w-100 p-3 m-2 text-center"
                                 onClick={() => {
                                     setEditing(false);
@@ -157,7 +157,7 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
                         </div>
                     </form>
                     {error && <p>{error}</p>}
-                    {userMsg && <p className="text-primary text-center fw-bold p-3">{userMsg} <FontAwesomeIcon icon={faCheck} className="text-success" /></p>}
+                    {userMsg && <p className="text-lift text-center fw-bold p-3">{userMsg} <FontAwesomeIcon icon={faCheck} className="text-success" /></p>}
                 </dialog>
             }
 
@@ -168,7 +168,7 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
                         <p><em>This action cannot be undone.</em></p>
                     </div>
                     <div className="d-flex justify-content-around">
-                        <button className="btn btn-primary btn-sm" onClick={() => setConfirmDeleteModelOpen(false)}>No</button>
+                        <button className="btn btn-lift btn-sm" onClick={() => setConfirmDeleteModelOpen(false)}>No</button>
                         <button className="btn btn-danger btn-sm" onClick={() => {
                             setConfirmDelete(true);
                             deleteOption();

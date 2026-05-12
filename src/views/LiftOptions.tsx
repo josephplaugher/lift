@@ -51,14 +51,14 @@ export default function LiftOptions() {
                         <div>
                             {editing ?
                                 <>
-                                    <FontAwesomeIcon className="fa-xl text-primary mt-1" icon={faSave} onClick={() => updateOption()} />
-                                    <FontAwesomeIcon className="fa-xl text-primary mt-1" icon={faCancel} onClick={() => {
+                                    <FontAwesomeIcon className="fa-xl text-lift mt-1" icon={faSave} onClick={() => updateOption()} />
+                                    <FontAwesomeIcon className="fa-xl text-lift mt-1" icon={faCancel} onClick={() => {
                                         setEditing(false); setName(""); setIsBarbellLift(false);
                                     }
                                     } />
                                 </>
                                 :
-                                <FontAwesomeIcon className="fa-xl text-primary mt-1" icon={faCirclePlus} onClick={() => addOption()} />
+                                <FontAwesomeIcon className="fa-xl text-lift mt-1" icon={faCirclePlus} onClick={() => addOption()} />
                             }
                         </div>
                     </div>
@@ -88,7 +88,7 @@ export default function LiftOptions() {
                                         <tr className="m-2" key={l.Id} id={l.Id}>
                                             <td> {l.Name}</td>
                                             <td> {l.IsBarbellLift ? "Yes" : "No"}</td>
-                                            <td><button className="btn btn-sm btn-primary"
+                                            <td><button className="btn btn-sm btn-lift"
                                                 onClick={() => {
                                                     setEditing(true);
                                                     setName(l.Name);
@@ -119,7 +119,7 @@ export default function LiftOptions() {
                             <p><em>This action cannot be undone. If you have already tracked sets for this lift, they will be deleted as well.</em></p>
                         </div>
                         <div className="d-flex justify-content-around">
-                            <button className="btn btn-primary btn-sm" onClick={() => setConfirmDeleteModelOpen(false)}>No</button>
+                            <button className="btn btn-lift btn-sm" onClick={() => setConfirmDeleteModelOpen(false)}>No</button>
                             <button className="btn btn-danger btn-sm" onClick={() => {
                                 setConfirmDelete(true);
                                 deleteOption();

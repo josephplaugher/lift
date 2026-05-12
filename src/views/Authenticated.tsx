@@ -30,22 +30,22 @@ export default function Authenticated({ user }: TLiftParams) {
             <div className="container-fluid p-0">
                 <div className="row" data-testid="main-nav">
                     <div className="col p-0">
-                        <button className={`btn btn-primary rounded-0 w-100 p-3 ${tab == ITabOptions.Lift ? "border-info" : "border-dark"}`} onClick={() => setTab(ITabOptions.Lift)}>
+                        <button className={`btn btn-lift text-white rounded-0 w-100 p-3 ${tab == ITabOptions.Lift ? "border-info" : "border-dark"}`} onClick={() => setTab(ITabOptions.Lift)}>
                             Lift
                         </button>
                     </div>
                     <div className="col p-0">
-                        <button className={`btn btn-primary rounded-0 w-100 p-3 ${tab == ITabOptions.LiftOptions ? "border-info" : "border-dark"}`} onClick={() => setTab(ITabOptions.LiftOptions)}>
+                        <button className={`btn btn-lift text-white rounded-0 w-100 p-3 ${tab == ITabOptions.LiftOptions ? "border-info" : "border-dark"}`} onClick={() => setTab(ITabOptions.LiftOptions)}>
                             Options
                         </button>
                     </div>
                     <div className="col p-0">
-                        <button className={`btn btn-primary rounded-0 w-100 p-3 ${tab == ITabOptions.LiftHistory ? "border-info" : "border-dark"}`} onClick={() => setTab(ITabOptions.LiftHistory)}>
+                        <button className={`btn btn-lift text-white rounded-0 w-100 p-3 ${tab == ITabOptions.LiftHistory ? "border-info" : "border-dark"}`} onClick={() => setTab(ITabOptions.LiftHistory)}>
                             History
                         </button>
                     </div>
                     <div className="col p-0">
-                        <button className={`btn btn-primary rounded-0 w-100 p-3 ${tab == ITabOptions.Me ? "border-info" : "border-dark"}`} onClick={() => setTab(ITabOptions.Me)}>
+                        <button className={`btn btn-lift text-white rounded-0 w-100 p-3 ${tab == ITabOptions.Me ? "border-info" : "border-dark"}`} onClick={() => setTab(ITabOptions.Me)}>
                             Me
                         </button>
                     </div>
@@ -53,7 +53,7 @@ export default function Authenticated({ user }: TLiftParams) {
             </div>
             <div>
                 {tab == ITabOptions.Lift && <LiftSession name={name} setName={setName} units={units} setUnits={setUnits} />}
-                {tab == ITabOptions.LiftHistory && <LiftHistory name={name} setName={setName} units={units} setUnits={setUnits} />}
+                {tab == ITabOptions.LiftHistory && <LiftHistory name={name} units={units} setUnits={setUnits} />}
                 {tab == ITabOptions.LiftOptions && <LiftOptions />}
                 {tab == ITabOptions.Me && <UserProfile user={user} logout={logout} subscribe={subscribe} paid={paid} />}
             </div>

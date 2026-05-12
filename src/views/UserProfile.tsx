@@ -21,7 +21,7 @@ export default function UserProfile({ user, logout, subscribe, paid }: TProfileP
                     :
                     <button className="btn btn-success align-self-center mt-5" onClick={() => subscribe()}>subscribe</button>
                 }
-                <button className="btn btn-primary align-self-center mt-5" onClick={() => logout()}>Sign Out</button>
+                <button className="btn btn-lift align-self-center mt-5" onClick={() => logout()}>Sign Out</button>
             </div>
         </div>
     );

@@ -31,15 +31,15 @@ export default function LiftHistory({ name, units, setUnits }: { name: string, u
 
     return (
         <div className="container-fluid px-0">
-            <div className="row mb-3 g-0">
-                <div className="col d-flex justify-content-between align-items-center text-center">
+            <div className="row my-3 g-0">
+                <div className="col d-flex justify-content-between align-items-center text-center text-lift">
                     <h2 className="ms-2">{name}</h2>
                     <div>
-                        <button className="btn btn-primary btn-sm me-3"
+                        <button className="btn btn-lift text-white btn-sm me-3"
                             onClick={() => setStartDate(new Date(new Date().setDate(new Date().getDate() - 366)).toISOString().split("T")[0])}>
                             <FontAwesomeIcon icon={faRefresh} />
                         </button>
-                        <button className="btn btn-primary btn-sm me-3" onClick={() => { units == EUnits.Kg ? setUnits(EUnits.Lbs) : setUnits(EUnits.Kg) }}>
+                        <button className="btn btn-lift text-white btn-sm me-3" onClick={() => { units == EUnits.Kg ? setUnits(EUnits.Lbs) : setUnits(EUnits.Kg) }}>
                             {units}
                         </button>
                     </div>
