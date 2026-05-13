@@ -1,6 +1,6 @@
 import { User } from '@auth0/auth0-react';
 import { ESubscriptionStatusEnum } from '../interfaces/ISubscriptionStatus.enum';
-import barbell from "../images/barbell.webp";
+import barbell from "../images/barbell.svg";
 
 type TProfileParams = {
     user: User;
