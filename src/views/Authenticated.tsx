@@ -25,7 +25,8 @@ export default function Authenticated({ user }: TLiftParams) {
     const [name, setName] = useState<string>("");
     const [units, setUnits] = useState<EUnits>(EUnits.Kg);
     
-    if (paid == ESubscriptionStatusEnum.Active || paid == ESubscriptionStatusEnum.Trialing) return (
+    if (paid?.toLocaleLowerCase() == ESubscriptionStatusEnum.Active.toLocaleLowerCase() || 
+    paid?.toLocaleLowerCase() == ESubscriptionStatusEnum.Trialing.toLocaleLowerCase()) return (
         <>
             <div className="container-fluid p-0">
                 <div className="row" data-testid="main-nav">
@@ -59,5 +60,6 @@ export default function Authenticated({ user }: TLiftParams) {
             </div>
         </>
     )
-    if (paid == ESubscriptionStatusEnum.PastDue || paid == null) return <UserProfile user={user} logout={logout} subscribe={subscribe} paid={paid} />
+    if (paid?.toLocaleLowerCase() == ESubscriptionStatusEnum.PastDue.toLocaleLowerCase() || paid == null) 
+        return <UserProfile user={user} logout={logout} subscribe={subscribe} paid={paid} />
 }
