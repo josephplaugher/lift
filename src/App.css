@@ -27,7 +27,7 @@ input[type='number'] {
   /* Size */
   border-width: 0.6rem;
   /* Thickness */
-  color: #007bff;
+  color: #060b47;
   /* Spinner color */
 }
 
@@ -52,7 +52,7 @@ input[type='number'] {
   height: 8rem;
   border-width: 1rem;
   /* Thickness */
-  color: #007bff;
+  color: #060b47;
   /* Spinner color */
 }
 
@@ -87,5 +87,3 @@ dialog[open] {
   padding: 24px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
 }
-
-svg path { fill: #007bff; }

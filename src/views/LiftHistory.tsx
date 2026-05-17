@@ -25,7 +25,8 @@ export default function LiftHistory({ name, units, setUnits }: { name: string, u
         queryFn: () => GetLiftHistoryGrouped(token, name, startDate, endDate),
         select: (data: ILiftGraphable[]) => data.map((row: ILiftGraphable) => ({
             Date: row.Date,
-            Load: units === EUnits.Lbs ? ConvertUnits(units, Number(row.Load)) : Number(row.Load) as number
+            Load: units === EUnits.Lbs ? ConvertUnits(units, Number(row.Load)) : Number(row.Load) as number,
+            Lift: row.Lift
         })) as ILiftGraphable[]
     })
 
@@ -35,11 +36,13 @@ export default function LiftHistory({ name, units, setUnits }: { name: string, u
                 <div className="col d-flex justify-content-between align-items-center text-center text-lift">
                     <h2 className="ms-2">{name}</h2>
                     <div>
-                        <button className="btn btn-lift text-white btn-sm me-3"
-                            onClick={() => setStartDate(new Date(new Date().setDate(new Date().getDate() - 366)).toISOString().split("T")[0])}>
-                            <FontAwesomeIcon icon={faRefresh} />
-                        </button>
-                        <button className="btn btn-lift text-white btn-sm me-3" onClick={() => { units == EUnits.Kg ? setUnits(EUnits.Lbs) : setUnits(EUnits.Kg) }}>
+                        <FontAwesomeIcon icon={faRefresh} className="btn btn-lift"
+                            style={{ color: "white" }}
+                            onClick={() => {
+                                setStartDate(new Date(new Date().setDate(new Date().getDate() - 366)).toISOString().split("T")[0])
+                            }}
+                        />
+                        <button className="btn btn-lift text-white btn-sm mx-3" onClick={() => { units == EUnits.Kg ? setUnits(EUnits.Lbs) : setUnits(EUnits.Kg) }}>
                             {units}
                         </button>
                     </div>
@@ -75,7 +78,7 @@ export default function LiftHistory({ name, units, setUnits }: { name: string, u
                                         if (!active || !payload?.length) return null;
                                         return (
                                             <div style={{
-                                                backgroundColor: 'grey',
+                                                backgroundColor: 'white',
                                                 border: '1px solid #060b47',
                                                 padding: '8px 12px',
                                                 borderRadius: 6,
@@ -87,9 +90,15 @@ export default function LiftHistory({ name, units, setUnits }: { name: string, u
                                                 {payload.map((entry, i) => (
                                                     <>
                                                         <p key={i}>
-                                                            {entry.name}: {entry.value} 
+                                                            Total {entry.name}: {entry.value}
                                                         </p>
-                                                        <p key={i}><small><em>Weight x the Sum of Sets</em></small></p>
+                                                        <p key={i}><small><em>Weight: {ConvertUnits(units, entry.payload.Lift.Weight)}</em></small></p>
+                                                        <p key={i}><small><em>Sets: {entry.payload.Lift.Set1},
+                                                            {entry.payload.Lift.Set2 || 0},
+                                                            {entry.payload.Lift.Set3 || 0},
+                                                            {entry.payload.Lift.Set4 || 0},
+                                                            {entry.payload.Lift.Set5 || 0}
+                                                        </em></small></p>
                                                     </>
                                                 ))}
                                             </div>

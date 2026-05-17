@@ -31,7 +31,7 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
     return (
         <>
             <div className="container-fluid py-0 px-2" style={{ height: "90vh" }}>
-                <button className="toggle-btn btn btn-sm btn-lift px-2 pb-1" onClick={() => { units == EUnits.Kg ? setUnits(EUnits.Lbs) : setUnits(EUnits.Kg) }}>
+                <button className="toggle-btn btn btn-sm btn-lift text-white px-2 pb-1" onClick={() => { units == EUnits.Kg ? setUnits(EUnits.Lbs) : setUnits(EUnits.Kg) }}>
                     {units}
                 </button>
                 <div className="row overflow-auto p-2" style={{ height: "58vh" }}>
@@ -73,14 +73,14 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
                         <form onSubmit={(e) => AddSets(e)}>
                             <input name="name" value={name} hidden onChange={() => { }} />
                             {isBarbellLift && <div className="d-flex justify-content-between align-items-center">
-                                <div className={`btn ${kg252 == 0 ? "btn-secondary" : "btn-lift"}`} onClick={() => kg252 == 0 ? setKg252(25) : setKg252(0)}><small>{ConvertUnits(units, 25)}</small></div>   
-                                <div className={`btn ${kg25 == 0 ? "btn-secondary" : "btn-lift"}`} onClick={() => kg25 == 0 ? setKg25(25) : setKg25(0)}><small>{ConvertUnits(units, 25)}</small></div>
-                                <div className={`btn ${kg202 == 0 ? "btn-secondary" : "btn-lift"}`} onClick={() => kg202 == 0 ? setKg202(20) : setKg202(0)}><small>{ConvertUnits(units, 20)}</small></div>
-                                <div className={`btn ${kg20 == 0 ? "btn-secondary" : "btn-lift"}`} onClick={() => kg20 == 0 ? setKg20(20) : setKg20(0)}><small>{ConvertUnits(units, 20)}</small></div>
-                                <div className={`btn ${kg15 == 0 ? "btn-secondary" : "btn-lift"}`} onClick={() => kg15 == 0 ? setKg15(15) : setKg15(0)}><small>{ConvertUnits(units, 15)}</small></div>
-                                <div className={`btn ${kg10 == 0 ? "btn-secondary" : "btn-lift"}`} onClick={() => kg10 == 0 ? setKg10(10) : setKg10(0)}><small>{ConvertUnits(units, 10)}</small></div>
-                                <div className={`btn ${kg5 == 0 ? "btn-secondary" : "btn-lift"}`} onClick={() => kg5 == 0 ? setKg5(5) : setKg5(0)}><small>{ConvertUnits(units, 5)}</small></div>
-                                <div className={`btn ${kg2_5 == 0 ? "btn-secondary" : "btn-lift"}`} onClick={() => kg2_5 == 0 ? setKg2_5(2.5) : setKg2_5(0)}><small>{ConvertUnits(units, 2.5)}</small></div>
+                                <div className={`btn ${kg252 == 0 ? "btn-secondary" : "btn-lift text-white"}`} onClick={() => kg252 == 0 ? setKg252(25) : setKg252(0)}><small>{ConvertUnits(units, 25)}</small></div>   
+                                <div className={`btn ${kg25 == 0 ? "btn-secondary" : "btn-lift text-white"}`} onClick={() => kg25 == 0 ? setKg25(25) : setKg25(0)}><small>{ConvertUnits(units, 25)}</small></div>
+                                <div className={`btn ${kg202 == 0 ? "btn-secondary" : "btn-lift text-white"}`} onClick={() => kg202 == 0 ? setKg202(20) : setKg202(0)}><small>{ConvertUnits(units, 20)}</small></div>
+                                <div className={`btn ${kg20 == 0 ? "btn-secondary" : "btn-lift text-white"}`} onClick={() => kg20 == 0 ? setKg20(20) : setKg20(0)}><small>{ConvertUnits(units, 20)}</small></div>
+                                <div className={`btn ${kg15 == 0 ? "btn-secondary" : "btn-lift text-white"}`} onClick={() => kg15 == 0 ? setKg15(15) : setKg15(0)}><small>{ConvertUnits(units, 15)}</small></div>
+                                <div className={`btn ${kg10 == 0 ? "btn-secondary" : "btn-lift text-white"}`} onClick={() => kg10 == 0 ? setKg10(10) : setKg10(0)}><small>{ConvertUnits(units, 10)}</small></div>
+                                <div className={`btn ${kg5 == 0 ? "btn-secondary" : "btn-lift text-white"}`} onClick={() => kg5 == 0 ? setKg5(5) : setKg5(0)}><small>{ConvertUnits(units, 5)}</small></div>
+                                <div className={`btn ${kg2_5 == 0 ? "btn-secondary" : "btn-lift text-white"}`} onClick={() => kg2_5 == 0 ? setKg2_5(2.5) : setKg2_5(0)}><small>{ConvertUnits(units, 2.5)}</small></div>
                             </div>}
                             <div className="d-flex justify-content-between py-3">
                                 <div style={inputgroup}>

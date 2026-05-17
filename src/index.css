@@ -14,16 +14,19 @@ body {
 .btn-lift {
   background-color: #060b47 !important;
   border-color: #060b47 !important;
+  color: white !important;
 }
 
 .btn-lift:hover {
   background-color: #060b47 !important;
   border-color: #060b47 !important;
+  color: white !important;
 }
 
 .btn-lift:focus {
   background-color: #060b47 !important;
   border-color: #060b47 !important;
+  color: white !important;
 }
 
 .text-lift {

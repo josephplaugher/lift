@@ -58,7 +58,7 @@ export default function LiftOptions() {
                                     } />
                                 </>
                                 :
-                                <FontAwesomeIcon className="fa-xl text-lift mt-1" icon={faCirclePlus} onClick={() => addOption()} />
+                                <FontAwesomeIcon className="fa-xl text-lift mt-1" style={{color: "#060b47"}} icon={faCirclePlus} onClick={() => addOption()} />
                             }
                         </div>
                     </div>
