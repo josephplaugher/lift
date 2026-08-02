@@ -21,9 +21,18 @@ type TLiftParams = {
 export default function Authenticated({ user }: TLiftParams) {
     const [tab, setTab] = useState<ITabOptions>(ITabOptions.Lift)
     const { logout } = useAuth0()
-    const { subscribe, paid } = usePayment(user.sub!);
+    const { subscribe, cancel, paid, cancelAtPeriodEnd, currentPeriodEnd } = usePayment(user.sub!);
     const [name, setName] = useState<string>("");
     const [units, setUnits] = useState<EUnits>(EUnits.Kg);
+    const profileProps = {
+        user,
+        logout,
+        subscribe,
+        cancel,
+        paid,
+        cancelAtPeriodEnd,
+        currentPeriodEnd,
+    };
     
     if (paid?.toLocaleLowerCase() == ESubscriptionStatusEnum.Active.toLocaleLowerCase() || 
     paid?.toLocaleLowerCase() == ESubscriptionStatusEnum.Trialing.toLocaleLowerCase()) return (
@@ -56,10 +65,10 @@ export default function Authenticated({ user }: TLiftParams) {
                 {tab == ITabOptions.Lift && <LiftSession name={name} setName={setName} units={units} setUnits={setUnits} />}
                 {tab == ITabOptions.LiftHistory && <LiftHistory name={name} units={units} setUnits={setUnits} />}
                 {tab == ITabOptions.LiftOptions && <LiftOptions />}
-                {tab == ITabOptions.Me && <UserProfile user={user} logout={logout} subscribe={subscribe} paid={paid} />}
+                {tab == ITabOptions.Me && <UserProfile {...profileProps} />}
             </div>
         </>
     )
     if (paid?.toLocaleLowerCase() == ESubscriptionStatusEnum.PastDue.toLocaleLowerCase() || paid == null) 
-        return <UserProfile user={user} logout={logout} subscribe={subscribe} paid={paid} />
+        return <UserProfile {...profileProps} />
 }

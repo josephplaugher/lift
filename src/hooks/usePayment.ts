@@ -9,6 +9,8 @@ const stripePromise = loadStripe(import.meta.env.VITE_PUBLIC_STRIPE_PUBLISHABLE_
 export default function usePayment(userId: string) {
     const token = useGetToken();
     const [status, setStatus] = useState<ESubscriptionStatusEnum | null>(null);
+    const [cancelAtPeriodEnd, setCancelAtPeriodEnd] = useState(false);
+    const [currentPeriodEnd, setCurrentPeriodEnd] = useState<string | null>(null);
 
     useEffect(() => {
         verifyPaymentStatus(userId);
@@ -26,8 +28,10 @@ export default function usePayment(userId: string) {
                 "Accept": "application/json",
             }
         })
-        const isPaid = await result.json();
-        setStatus(isPaid.status);
+        const paymentStatus = await result.json();
+        setStatus(paymentStatus.status);
+        setCancelAtPeriodEnd(!!paymentStatus.cancelAtPeriodEnd);
+        setCurrentPeriodEnd(paymentStatus.currentPeriodEnd ?? null);
     }
 
     async function subscribe() {
@@ -47,5 +51,26 @@ export default function usePayment(userId: string) {
         window.location.href = url;
     }
 
-    return { subscribe, paid: status };
+    async function cancel(cancelReason?: string) {
+        const stripe = await stripePromise as Stripe | null;
+        if (!stripe) return;
+
+        const result = await fetch(`${ApiUrl()}/api/payment/cancel`, {
+            method: 'POST',
+            body: JSON.stringify({ userId, cancelReason }),
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                "Accept": "application/json",
+            }
+        })
+        const paymentStatus = await result.json();
+        if (paymentStatus.status) {
+            setStatus(paymentStatus.status);
+            setCancelAtPeriodEnd(!!paymentStatus.cancelAtPeriodEnd);
+            setCurrentPeriodEnd(paymentStatus.currentPeriodEnd ?? null);
+        }
+    }
+
+    return { subscribe, cancel, paid: status, cancelAtPeriodEnd, currentPeriodEnd };
 }

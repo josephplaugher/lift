@@ -47,14 +47,14 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
             <div className="container-fluid py-3 border border-4 border-lift bg-light" style={{ bottom: "0", position: "absolute" }} data-testid="lift-session">
                 <div className="row pb-3" >
                     <div className="col-9">
-                        <select onChange={(e) => setName(e.target.value)} defaultValue={liftOptionsQuery.data?.[0].Name}
+                        <select onChange={(e) => setName(e.target.value)} defaultValue={liftOptionsQuery.data?.[0]?.Name ?? ""}
                             className={`form-control form-control-sm ${liftOptionsQuery.status == "pending" ? "bg-warning" : liftOptionsQuery.status == "error" ? "text-danger" : ""}`}>
                             {liftOptionsQuery.status === 'pending' ? (
                                 <option value="">Getting lift options...</option>
                             ) : liftOptionsQuery.status === 'error' ? (
                                 <option value="">Something went wrong...</option>
                             ) : (
-                                liftOptionsQuery.data.map((l: ILiftOption) =>
+                                liftOptionsQuery.data && liftOptionsQuery.data.length > 0 && liftOptionsQuery.data.map((l: ILiftOption) =>
                                     <option key={l.Id} id={l.Id} value={l.Name}>
                                         {l.Name}
                                     </option>
