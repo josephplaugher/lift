@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint --fix . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
+    "deploy": "bash deploy.sh",
     "test": "vitest --typecheck"
   },
   "dependencies": {
