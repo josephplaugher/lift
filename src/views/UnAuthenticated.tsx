@@ -10,12 +10,14 @@ export default function UnAuthenticated() {
             <div className="d-flex justify-content-around w-100">
                 <button className="btn btn-lift text-white align-self-center my-2 p-3"
                     onClick={() => loginWithRedirect({
+                        appState: { returnTo: "/" },
                         authorizationParams: {
                             scope: 'openid profile email offline_access'
                         }
                     })}>Sign In</button>
                 <button className="btn border-lift text-lift align-self-center p-3"
                     onClick={() => loginWithRedirect({
+                        appState: { returnTo: "/" },
                         authorizationParams: {
                             screen_hint: "signup",
                             scope: 'openid profile email offline_access'
