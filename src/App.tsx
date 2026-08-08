@@ -6,6 +6,10 @@ import {
 } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import UnAuthenticated from './views/UnAuthenticated'
+import CompleteProfile from './views/CompleteProfile'
+import VerifyEmail from './views/VerifyEmail'
+import OnboardingGate from './components/OnboardingGate'
+import { ProfileProvider } from './hooks/ProfileContext'
 import useAuth from './hooks/useAuth'
 import { LoadingIndicator } from './components/StatusIndicators'
 import { Navigate, Route, Routes } from 'react-router-dom'
@@ -38,14 +42,24 @@ function AppRoutes() {
         element={isAuthenticated ? <Navigate to="/" replace /> : <UnAuthenticated />}
       />
       <Route
-        path="/"
-        element={
-          user && isAuthenticated
-            ? <Authenticated user={user} />
-            : <Navigate to="/login" replace />
-        }
+        path="/verify-email"
+        element={isAuthenticated ? <VerifyEmail /> : <Navigate to="/login" replace />}
       />
-      <Route path="*" element={<Navigate to={isAuthenticated ? "/" : "/login"} replace />} />
+      <Route
+        path="/complete-profile"
+        element={isAuthenticated ? <CompleteProfile /> : <Navigate to="/login" replace />}
+      />
+      <Route element={<OnboardingGate />}>
+        <Route
+          path="/"
+          element={
+            user && isAuthenticated
+              ? <Authenticated user={user} />
+              : <Navigate to="/login" replace />
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Route>
     </Routes>
   );
 }
@@ -53,7 +67,9 @@ function AppRoutes() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AppRoutes />
+      <ProfileProvider>
+        <AppRoutes />
+      </ProfileProvider>
       <ReactQueryDevtools initialIsOpen={false} buttonPosition='bottom-left' position='bottom' />
     </QueryClientProvider>
   )

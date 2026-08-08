@@ -1,6 +1,7 @@
 import { User } from '@auth0/auth0-react';
 import { ESubscriptionStatusEnum } from '../interfaces/ISubscriptionStatus.enum';
 import useCancelSubscription from '../hooks/useCancelSubscription';
+import { useProfileContext } from '../hooks/ProfileContext';
 import barbell from "../images/barbell.svg";
 
 type TProfileParams = {
@@ -38,16 +39,20 @@ export default function UserProfile({
         proceedToReason,
         submitCancel,
     } = useCancelSubscription(cancel);
+    const { profile } = useProfileContext();
     const subscribed = isSubscribed(paid);
     const cancelDate = currentPeriodEnd
         ? new Date(currentPeriodEnd).toLocaleDateString()
         : null;
+    const firstName = profile?.fullName?.trim().split(/\s+/)[0]
+        || user?.given_name
+        || user?.name;
 
     return (
         <div className='row'>
             <div className='d-flex justify-content-end'><img src={barbell} width={"50vw"} /></div>
             <div className="col d-flex flex-column mt-5 justify-content-between align-items-center text-center">
-                <h1 className='mb-5'>Hello {user?.given_name || user?.name}</h1>
+                <h1 className='mb-5'>Hello {firstName}</h1>
                 {subscribed ?
                     <>
                         <p>You are subscribed monthly.</p>
