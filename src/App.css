@@ -87,3 +87,119 @@ dialog[open] {
   padding: 24px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
 }
+
+/* Personal record celebration */
+dialog[open].pr-celebration {
+  position: fixed;
+  overflow: hidden;
+  border: 4px solid #d4af37;
+  background: linear-gradient(160deg, #fffdf5 0%, #ffeeb8 55%, #f6d873 100%);
+  box-shadow: 0 8px 40px rgba(212, 175, 55, 0.55);
+  animation: pr-pop 350ms cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+.pr-celebration .pr-trophy {
+  font-size: 4rem;
+  color: #d4af37;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.25));
+  animation: pr-bounce 1.2s ease-in-out infinite;
+}
+
+.pr-celebration .pr-title {
+  margin-top: 0.75rem;
+  color: #060b47;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.pr-celebration .pr-lift-name {
+  margin-bottom: 0;
+  font-size: 1.25rem;
+  color: #060b47;
+}
+
+.pr-celebration .pr-weight {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #060b47;
+}
+
+.pr-celebration .pr-units {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.pr-confetti {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.pr-confetti-piece {
+  position: absolute;
+  top: -12px;
+  width: 8px;
+  height: 14px;
+  border-radius: 2px;
+  animation: pr-fall 2.4s linear infinite;
+}
+
+.pr-confetti-piece-0 { left: 8%; background: #d4af37; animation-delay: 0s; }
+.pr-confetti-piece-1 { left: 30%; background: #060b47; animation-delay: 0.4s; }
+.pr-confetti-piece-2 { left: 58%; background: #e8734a; animation-delay: 0.8s; }
+.pr-confetti-piece-3 { left: 82%; background: #2f9e6b; animation-delay: 1.2s; }
+
+.pr-confetti-piece:nth-child(n + 5) { margin-left: 9%; animation-duration: 3.1s; }
+.pr-confetti-piece:nth-child(n + 9) { margin-left: 18%; animation-duration: 2.7s; }
+
+@keyframes pr-pop {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.7);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes pr-bounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pr-fall {
+  from {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateY(420px) rotate(540deg);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  dialog[open].pr-celebration,
+  .pr-celebration .pr-trophy,
+  .pr-confetti-piece {
+    animation: none;
+  }
+
+  .pr-confetti {
+    display: none;
+  }
+}

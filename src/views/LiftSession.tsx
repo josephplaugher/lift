@@ -6,7 +6,7 @@ import { EUnits } from "../interfaces/IUnits.enum";
 import ConvertUnits from "../utilities/ConvertUnits";
 import useLiftSession from "../hooks/useLiftSession";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faTriangleExclamation, faTrophy } from "@fortawesome/free-solid-svg-icons";
 import { Dispatch, SetStateAction } from "react";
 
 export default function LiftSession({ name, setName, units, setUnits }: { name: string, setName: Dispatch<SetStateAction<string>>, units: EUnits, setUnits: Dispatch<SetStateAction<EUnits>> }) {
@@ -27,7 +27,8 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
         handleChange, editing, setEditing, setConfirmDelete,
         confirmDeleteModalOpen, setConfirmDeleteModelOpen,
         AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2,
-        Set3, setSet3, Set4, setSet4, Set5, setSet5, isBarbellLift } = useLiftSession(name, units, setUnits)
+        Set3, setSet3, Set4, setSet4, Set5, setSet5, isBarbellLift,
+        newPr, dismissPr, canSubmit, notifyInvalid, validationMessage, showValidationWarning } = useLiftSession(name, setName, units, setUnits)
     return (
         <>
             <div className="container-fluid py-0 px-2" style={{ height: "90vh" }}>
@@ -47,7 +48,7 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
             <div className="container-fluid py-3 border border-4 border-lift bg-light" style={{ bottom: "0", position: "absolute" }} data-testid="lift-session">
                 <div className="row pb-3" >
                     <div className="col-9">
-                        <select onChange={(e) => setName(e.target.value)} defaultValue={liftOptionsQuery.data?.[0]?.Name ?? ""}
+                        <select onChange={(e) => setName(e.target.value)} value={name}
                             className={`form-control form-control-sm ${liftOptionsQuery.status == "pending" ? "bg-warning" : liftOptionsQuery.status == "error" ? "text-danger" : ""}`}>
                             {liftOptionsQuery.status === 'pending' ? (
                                 <option value="">Getting lift options...</option>
@@ -104,8 +105,15 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
                                     <input type="number" style={liftInputStyle} id="Set5" name="Set5" value={Set5} onChange={(e) => setSet5(parseInt(e.target.value))} pattern="\d*" inputMode="numeric"></input>
                                 </div>
                             </div>
-                            <div className="">
-                                <button type="submit" className="btn btn-lift text-white w-100 p-3">Add Sets</button>
+                            {/* Disabled buttons swallow their own clicks, so the wrapper catches the attempt. */}
+                            <div className="" onClick={() => { if (!canSubmit) notifyInvalid() }}>
+                                <button type="submit" className={`btn text-white w-100 p-3 ${showValidationWarning ? "btn-danger" : "btn-lift"}`} disabled={!canSubmit}>
+                                    <span aria-live="polite">
+                                        {showValidationWarning
+                                            ? <><FontAwesomeIcon icon={faTriangleExclamation} className="me-2" />{validationMessage}</>
+                                            : "Add Sets"}
+                                    </span>
+                                </button>
                             </div>
                         </form>
                         {error && <p>{error}</p>}
@@ -176,6 +184,19 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
                     </div>
                 </dialog>
             }
+            {newPr &&
+                <dialog open className="pr-celebration text-center">
+                    <div className="pr-confetti" aria-hidden="true">
+                        {Array.from({ length: 12 }).map((_, i) => <span key={i} className={`pr-confetti-piece pr-confetti-piece-${i % 4}`} />)}
+                    </div>
+                    <FontAwesomeIcon icon={faTrophy} className="pr-trophy" />
+                    <h2 className="pr-title">New Personal Record!</h2>
+                    <p className="pr-lift-name">{newPr.liftName}</p>
+                    <p className="pr-weight">{ConvertUnits(units, newPr.weight)} <span className="pr-units">{units}</span></p>
+                    <button type="button" className="btn btn-lift text-white px-4 p-3" onClick={dismissPr}>Keep lifting</button>
+                </dialog>
+            }
+
             {loading && <div>
                 <LoadingIndicatorFullScreen />
             </div>}

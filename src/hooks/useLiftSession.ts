@@ -9,7 +9,7 @@ import { EUnits } from "../interfaces/IUnits.enum";
 import useGetToken from "../hooks/useGetToken";
 import { FetchDelete } from "../utilities/Fetch";
 
-export default function useLiftSession(name: string, units: EUnits, setUnits: Dispatch<SetStateAction<EUnits>>) {
+export default function useLiftSession(name: string, setName: Dispatch<SetStateAction<string>>, units: EUnits, setUnits: Dispatch<SetStateAction<EUnits>>) {
     const token = useGetToken();
     const [error, setError] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
@@ -35,10 +35,20 @@ export default function useLiftSession(name: string, units: EUnits, setUnits: Di
     });
     const [isBarbellLift, setIsBarbellLift] = useState<boolean>(true);
 
-    const liftHistoryQuery = useQuery<ILift[]>({ enabled: token != "", queryKey: ['liftHistory', name], queryFn: () => GetLiftHistory(token, name) })
+    const liftHistoryQuery = useQuery<ILift[]>({ enabled: token != "" && name != "", queryKey: ['liftHistory', name], queryFn: () => GetLiftHistory(token, name) })
     const liftOptionsQuery = useQuery<ILiftOption[]>({ enabled: token != "", queryKey: ['liftOptions'], queryFn: () => GetLiftOptions(token) })
     const { AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, 
-        Set3, setSet3, Set4, setSet4, Set5, setSet5 } = useAddSets(liftHistoryQuery, name, setUserMsg, setError, setLoading, selectedSet);
+        Set3, setSet3, Set4, setSet4, Set5, setSet5, newPr, dismissPr, canSubmit,
+        notifyInvalid, validationMessage, showValidationWarning } = useAddSets(liftHistoryQuery, name, setUserMsg, setError, setLoading, selectedSet);
+
+    // The select only shows the first lift by default, it never reports it, so
+    // fall back to it here whenever nothing valid is selected.
+    useEffect(() => {
+        const options = liftOptionsQuery.data;
+        if (!options || options.length === 0) return;
+        if (name && options.some((o: ILiftOption) => o.Name === name)) return;
+        setName(options[0].Name);
+    }, [liftOptionsQuery.data, name, setName])
 
     useEffect(() => {
         const w: number = ((kg252 + kg25 + kg202 + kg20 + kg15 + kg10 + kg5 + kg2_5) * 2) + 20;
@@ -108,6 +118,6 @@ export default function useLiftSession(name: string, units: EUnits, setUnits: Di
         liftOptionsQuery, confirmDelete, setConfirmDelete, confirmDeleteModalOpen, setConfirmDeleteModelOpen,
         selectedSet, setSelectedSet, handleChange, editing, setEditing,
         AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5,
-        isBarbellLift
+        isBarbellLift, newPr, dismissPr, canSubmit, notifyInvalid, validationMessage, showValidationWarning
     }
 }

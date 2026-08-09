@@ -1,6 +1,7 @@
-import { Dispatch, FormEvent, SetStateAction, useState } from "react";
+import { Dispatch, FormEvent, SetStateAction, useRef, useState } from "react";
 import { UseQueryResult } from "@tanstack/react-query";
 import ILift from "../interfaces/ILift.interface";
+import { TAddSetResponse, TPersonalRecord } from "../interfaces/IPersonalRecord";
 import useGetToken from "./useGetToken";
 import { FetchPatch, FetchPost } from "../utilities/Fetch";
 
@@ -17,12 +18,31 @@ export default function useAddSets(
     const [Set3, setSet3] = useState<number | string>(0);
     const [Set4, setSet4] = useState<number | string>(0);
     const [Set5, setSet5] = useState<number | string>(0);
+    const [newPr, setNewPr] = useState<TPersonalRecord | null>(null);
+    const [warningVisible, setWarningVisible] = useState<boolean>(false);
+    const warningTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+    const hasLiftName = Name.trim() !== "";
+    // A cleared input parses to NaN, which fails this comparison the same as 0.
+    const hasReps = [Set1, Set2, Set3, Set4, Set5].some((set) => Number(set) > 0);
+    const canSubmit = hasLiftName && hasReps;
+    const validationMessage = hasLiftName ? "Enter reps for at least one set" : "Choose a lift first";
+
+    function notifyInvalid() {
+        setWarningVisible(true);
+        clearTimeout(warningTimeout.current);
+        warningTimeout.current = setTimeout(() => setWarningVisible(false), 5000);
+    }
 
     async function AddSets(e: FormEvent<HTMLFormElement>): Promise<void> {
         e.preventDefault();
+        if (!canSubmit) {
+            notifyInvalid();
+            return;
+        }
         setLoading(true);
         try {
-            await FetchPost(`lift`,
+            const response = await FetchPost(`lift`,
                 {
                     Name,
                     Weight,
@@ -33,6 +53,14 @@ export default function useAddSets(
                     Set5
                 },
                 token)
+            const result: TAddSetResponse | null = await response.json().catch(() => null);
+            if (!response.ok) {
+                setError("That set could not be saved. Check the lift and try again.");
+                return;
+            }
+            if (result?.newPr && result.weight != null && result.liftName) {
+                setNewPr({ weight: result.weight, liftName: result.liftName })
+            }
             liftHistoryQuery.refetch();
             setUserMsg("Set Saved")
             setTimeout(() => setUserMsg(""), 5000)
@@ -74,5 +102,10 @@ export default function useAddSets(
         }
     }
 
-    return { AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5 }
+    function dismissPr() {
+        setNewPr(null);
+    }
+
+    return { AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5, newPr, dismissPr, canSubmit, notifyInvalid, validationMessage,
+        showValidationWarning: warningVisible && !canSubmit }
 }
