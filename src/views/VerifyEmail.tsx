@@ -10,7 +10,12 @@ import barbell from "../images/barbell.svg";
 /**
  * Resend goes through our API → Auth0 Management API
  * (POST /api/v2/jobs/verification-email).
- * email_verified updates only on a fresh ID token — try silent refresh, then re-login.
+ *
+ * email_verified only updates on a fresh ID token. Silent renewal needs a refresh
+ * token (offline_access + "Allow Offline Access" on the API); when that is
+ * unavailable the SDK falls back to an /authorize iframe, which Firefox and Safari
+ * block as third-party. A full-page redirect is first-party, so it always works and
+ * reuses the existing Auth0 session without prompting for credentials.
  */
 export default function VerifyEmail() {
     const { user, getAccessTokenSilently, getIdTokenClaims, loginWithRedirect, logout } = useAuth0();
@@ -36,18 +41,21 @@ export default function VerifyEmail() {
             const claims = await getIdTokenClaims();
             if (claims?.email_verified) {
                 await refreshProfile();
-                window.location.assign(profile?.profileComplete ? "/" : "/complete-profile");
+                // Full reload so Auth0Provider rehydrates the updated claims,
+                // then OnboardingGate routes to the right next step.
+                window.location.assign("/");
                 return;
             }
+            // Silent renewal worked, so this is a definitive answer.
             setMessageTone("warning");
             setMessage(
-                "Still not verified. If you already clicked the link, sign in again to refresh your session."
+                "Still not verified. Open the link in your email, then check again."
             );
-        } catch {
-            setMessageTone("warning");
-            setMessage("Could not refresh your session. Try signing in again.");
-        } finally {
             setChecking(false);
+        } catch (e) {
+            console.warn("Silent session refresh failed, falling back to redirect", e);
+            // No definitive answer — round-trip through Auth0 to get fresh claims.
+            await loginWithRedirect({ appState: { returnTo: "/" } });
         }
     }
 

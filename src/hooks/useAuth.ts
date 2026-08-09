@@ -3,7 +3,7 @@ import ApiUrl from "../utilities/ApiUrl";
 import { useAuth0 } from "@auth0/auth0-react";
 
 export default function useAuth(): any {
-    const { error, user, isAuthenticated, isLoading, getAccessTokenSilently, logout } = useAuth0();
+    const { error, user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
 
     useEffect(() => {
         if (isLoading || !isAuthenticated) return
@@ -17,7 +17,7 @@ export default function useAuth(): any {
                 });
             } catch (error: any) {
                 console.log('Silent token aqcuisition failed', error);
-                logout();
+                return;
             }
 
             try {
