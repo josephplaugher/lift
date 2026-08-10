@@ -5,8 +5,9 @@ import LiftHistoryTable from "../components/LiftHistoryTable";
 import { EUnits } from "../interfaces/IUnits.enum";
 import ConvertUnits from "../utilities/ConvertUnits";
 import useLiftSession from "../hooks/useLiftSession";
+import useRestTimer from "../hooks/useRestTimer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faTriangleExclamation, faTrophy } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faClock, faTriangleExclamation, faTrophy } from "@fortawesome/free-solid-svg-icons";
 import { Dispatch, SetStateAction } from "react";
 
 export default function LiftSession({ name, setName, units, setUnits }: { name: string, setName: Dispatch<SetStateAction<string>>, units: EUnits, setUnits: Dispatch<SetStateAction<EUnits>> }) {
@@ -29,6 +30,25 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
         AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2,
         Set3, setSet3, Set4, setSet4, Set5, setSet5, isBarbellLift,
         newPr, dismissPr, canSubmit, notifyInvalid, validationMessage, showValidationWarning } = useLiftSession(name, setName, units, setUnits)
+    const {
+        autoStart,
+        open: restTimerOpen,
+        displayTime,
+        done: restDone,
+        startTimer,
+        dismissTimer,
+        onSetRepEntered,
+    } = useRestTimer();
+
+    function handleSetRepChange(
+        setter: Dispatch<SetStateAction<number | string>>,
+        value: string,
+    ) {
+        const parsed = parseInt(value, 10);
+        setter(parsed);
+        onSetRepEntered(parsed);
+    }
+
     return (
         <>
             <div className="container-fluid py-0 px-2" style={{ height: "90vh" }}>
@@ -74,7 +94,7 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
                         <form onSubmit={(e) => AddSets(e)}>
                             <input name="name" value={name} hidden onChange={() => { }} />
                             {isBarbellLift && <div className="d-flex justify-content-between align-items-center">
-                                <div className={`btn ${kg252 == 0 ? "btn-secondary" : "btn-lift text-white"}`} onClick={() => kg252 == 0 ? setKg252(25) : setKg252(0)}><small>{ConvertUnits(units, 25)}</small></div>   
+                                <div className={`btn ${kg252 == 0 ? "btn-secondary" : "btn-lift text-white"}`} onClick={() => kg252 == 0 ? setKg252(25) : setKg252(0)}><small>{ConvertUnits(units, 25)}</small></div>
                                 <div className={`btn ${kg25 == 0 ? "btn-secondary" : "btn-lift text-white"}`} onClick={() => kg25 == 0 ? setKg25(25) : setKg25(0)}><small>{ConvertUnits(units, 25)}</small></div>
                                 <div className={`btn ${kg202 == 0 ? "btn-secondary" : "btn-lift text-white"}`} onClick={() => kg202 == 0 ? setKg202(20) : setKg202(0)}><small>{ConvertUnits(units, 20)}</small></div>
                                 <div className={`btn ${kg20 == 0 ? "btn-secondary" : "btn-lift text-white"}`} onClick={() => kg20 == 0 ? setKg20(20) : setKg20(0)}><small>{ConvertUnits(units, 20)}</small></div>
@@ -86,34 +106,46 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
                             <div className="d-flex justify-content-between py-3">
                                 <div style={inputgroup}>
                                     <label htmlFor="Set1">Set 1</label>
-                                    <input type="number" style={liftInputStyle} id="Set1" name="Set1" value={Set1} onChange={(e) => setSet1(parseInt(e.target.value))} pattern="\d*" inputMode="numeric" required></input>
+                                    <input type="number" style={liftInputStyle} id="Set1" name="Set1" value={Set1} onChange={(e) => handleSetRepChange(setSet1, e.target.value)} pattern="\d*" inputMode="numeric" required></input>
                                 </div>
                                 <div style={inputgroup}>
                                     <label htmlFor="Set2">Set 2</label>
-                                    <input type="number" style={liftInputStyle} id="Set2" name="Set2" value={Set2} onChange={(e) => setSet2(parseInt(e.target.value))} pattern="\d*" inputMode="numeric"></input>
+                                    <input type="number" style={liftInputStyle} id="Set2" name="Set2" value={Set2} onChange={(e) => handleSetRepChange(setSet2, e.target.value)} pattern="\d*" inputMode="numeric"></input>
                                 </div>
                                 <div style={inputgroup}>
                                     <label htmlFor="Set3">Set 3</label>
-                                    <input type="number" style={liftInputStyle} id="Set3" name="Set3" value={Set3} onChange={(e) => setSet3(parseInt(e.target.value))} pattern="\d*" inputMode="numeric"></input>
+                                    <input type="number" style={liftInputStyle} id="Set3" name="Set3" value={Set3} onChange={(e) => handleSetRepChange(setSet3, e.target.value)} pattern="\d*" inputMode="numeric"></input>
                                 </div>
                                 <div style={inputgroup}>
                                     <label htmlFor="Set4">Set 4</label>
-                                    <input type="number" style={liftInputStyle} id="Set4" name="Set4" value={Set4} onChange={(e) => setSet4(parseInt(e.target.value))} pattern="\d*" inputMode="numeric"></input>
+                                    <input type="number" style={liftInputStyle} id="Set4" name="Set4" value={Set4} onChange={(e) => handleSetRepChange(setSet4, e.target.value)} pattern="\d*" inputMode="numeric"></input>
                                 </div>
                                 <div style={inputgroup}>
                                     <label htmlFor="Set5">Set 5</label>
-                                    <input type="number" style={liftInputStyle} id="Set5" name="Set5" value={Set5} onChange={(e) => setSet5(parseInt(e.target.value))} pattern="\d*" inputMode="numeric"></input>
+                                    <input type="number" style={liftInputStyle} id="Set5" name="Set5" value={Set5} onChange={(e) => handleSetRepChange(setSet5, e.target.value)} pattern="\d*" inputMode="numeric"></input>
                                 </div>
                             </div>
                             {/* Disabled buttons swallow their own clicks, so the wrapper catches the attempt. */}
-                            <div className="" onClick={() => { if (!canSubmit) notifyInvalid() }}>
-                                <button type="submit" className={`btn text-white w-100 p-3 ${showValidationWarning ? "btn-danger" : "btn-lift"}`} disabled={!canSubmit}>
-                                    <span aria-live="polite">
-                                        {showValidationWarning
-                                            ? <><FontAwesomeIcon icon={faTriangleExclamation} className="me-2" />{validationMessage}</>
-                                            : "Add Sets"}
-                                    </span>
-                                </button>
+                            <div className="d-flex gap-2">
+                                <div className="flex-grow-1" onClick={() => { if (!canSubmit) notifyInvalid() }}>
+                                    <button type="submit" className={`btn text-white w-100 p-3 ${showValidationWarning ? "btn-danger" : "btn-lift"}`} disabled={!canSubmit}>
+                                        <span aria-live="polite">
+                                            {showValidationWarning
+                                                ? <><FontAwesomeIcon icon={faTriangleExclamation} className="me-2" />{validationMessage}</>
+                                                : "Add Sets"}
+                                        </span>
+                                    </button>
+                                </div>
+                                {!autoStart &&
+                                    <button
+                                        type="button"
+                                        className="btn btn-lift text-white p-3"
+                                        aria-label="Start rest timer"
+                                        onClick={startTimer}
+                                    >
+                                        <FontAwesomeIcon icon={faClock} />
+                                    </button>
+                                }
                             </div>
                         </form>
                         {error && <p>{error}</p>}
@@ -194,6 +226,16 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
                     <p className="pr-lift-name">{newPr.liftName}</p>
                     <p className="pr-weight">{ConvertUnits(units, newPr.weight)} <span className="pr-units">{units}</span></p>
                     <button type="button" className="btn btn-lift text-white px-4 p-3" onClick={dismissPr}>Keep lifting</button>
+                </dialog>
+            }
+
+            {restTimerOpen &&
+                <dialog open className="rest-timer text-center">
+                    <h2 className="rest-timer-title">{restDone ? "Rest done" : "Rest"}</h2>
+                    <p className="rest-timer-countdown" aria-live="polite">{displayTime}</p>
+                    <button type="button" className="btn btn-lift text-white px-4 p-3" onClick={dismissTimer}>
+                        {restDone ? "Back to lifting" : "Skip rest"}
+                    </button>
                 </dialog>
             }
 

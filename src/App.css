@@ -203,3 +203,23 @@ dialog[open].pr-celebration {
     display: none;
   }
 }
+
+/* Rest timer */
+dialog[open].rest-timer {
+  border: 4px solid #060b47;
+  background: #f8f9fa;
+}
+
+.rest-timer-title {
+  margin-top: 0;
+  color: #060b47;
+  font-weight: 700;
+}
+
+.rest-timer-countdown {
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #060b47;
+  font-variant-numeric: tabular-nums;
+}
