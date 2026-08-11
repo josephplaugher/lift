@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint --fix . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
+    "preview": "vite build --mode development && vite preview --port 5173 --strictPort",
     "deploy": "bash deploy.sh",
     "test": "vitest --typecheck"
   },
@@ -45,6 +45,8 @@
     "jsdom": "^26.1.0",
     "typescript": "^5.2.2",
     "vite": "^5.3.4",
-    "vitest": "^3.2.4"
+    "vite-plugin-pwa": "^0.20.5",
+    "vitest": "^3.2.4",
+    "workbox-window": "7.1.0"
   }
 }

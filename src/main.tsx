@@ -5,6 +5,16 @@ import './index.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Auth0Provider } from '@auth0/auth0-react'
 import { BrowserRouter } from 'react-router-dom'
+import { registerSW } from 'virtual:pwa-register'
+
+const updateSW = registerSW({
+  immediate: true,
+  onNeedRefresh() {
+    if (window.confirm('A new version of Lift is available. Reload now?')) {
+      updateSW(true)
+    }
+  },
+})
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -16,7 +26,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         authorizationParams={{
           redirect_uri: import.meta.env.VITE_AUTH0_REDIRECT_URI,
           scope: 'openid profile email offline_access',
-          audience: import.meta.env.VITE_API_URL_PROD || import.meta.env.VITE_API_URL_DEV
+          audience: import.meta.env.MODE === 'production'
+            ? import.meta.env.VITE_API_URL_PROD
+            : import.meta.env.VITE_API_URL_DEV
         }}
         useRefreshTokens={true}
         onRedirectCallback={(appState) => {

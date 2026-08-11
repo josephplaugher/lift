@@ -1,3 +1,7 @@
 export default function ApiUrl() {
-    return process.env.NODE_ENV == "development" ? import.meta.env.VITE_API_URL_DEV?.toString() : import.meta.env.VITE_API_URL_PROD?.toString()
+    // Vite sets NODE_ENV=production for every `vite build`, including --mode development.
+    // MODE is what actually reflects which .env file was used.
+    return import.meta.env.MODE === "production"
+        ? import.meta.env.VITE_API_URL_PROD?.toString()
+        : import.meta.env.VITE_API_URL_DEV?.toString()
 }
