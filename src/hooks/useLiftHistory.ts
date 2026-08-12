@@ -84,10 +84,15 @@ export default function useLiftHistory(
         setSharing(true);
         setShareError(null);
         const filename = `lift-progress-${slugifyLiftName(name)}.png`;
+        const card = shareRef.current;
+        const title = document.createElement("h3");
+        title.className = "progress-share-title text-lift text-center mb-3";
+        title.textContent = name;
+        card.prepend(title);
         try {
             // Let layout settle before snapshotting SVG chart nodes.
             await new Promise((resolve) => requestAnimationFrame(() => resolve(undefined)));
-            const dataUrl = await toPng(shareRef.current, {
+            const dataUrl = await toPng(card, {
                 cacheBust: true,
                 pixelRatio: 2,
                 backgroundColor: "#ffffff",
@@ -117,6 +122,7 @@ export default function useLiftHistory(
             console.error("Share progress failed", error);
             setShareError("Could not share that image. Try again.");
         } finally {
+            title.remove();
             setSharing(false);
         }
     }

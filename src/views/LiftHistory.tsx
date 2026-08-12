@@ -68,7 +68,6 @@ export default function LiftHistory({ name, units, setUnits }: { name: string, u
             <div className="row">
                 <div className="col min-w-0">
                     <div ref={shareRef} className="progress-share-card px-2 pb-3">
-                        <h3 className="progress-share-title text-lift text-center mb-3">{name}</h3>
                         {historyQuery.status === "pending" ? (
                             <LoadingIndicator />
                         ) : historyQuery.status === "error" ? (
@@ -132,7 +131,7 @@ export default function LiftHistory({ name, units, setUnits }: { name: string, u
                                 </p>
                             </div>
                         }
-                        <p className="progress-share-brand text-center mb-0 mt-3" aria-hidden="true">Lift!</p>
+                        <p className="progress-share-brand text-center mb-0 mt-3" aria-hidden="true">trackmylifts.fit</p>
                     </div>
                     {shareError && <p className="text-danger text-center mt-2 mb-0">{shareError}</p>}
                 </div>
