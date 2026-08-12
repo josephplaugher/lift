@@ -223,3 +223,79 @@ dialog[open].rest-timer {
   color: #060b47;
   font-variant-numeric: tabular-nums;
 }
+
+/* Progress tab personal record callout */
+.progress-pr {
+  border: 3px solid #d4af37;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(160deg, #fffdf5 0%, #ffeeb8 55%, #f6d873 100%);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.35);
+  animation: progress-pr-in 400ms cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+.progress-pr-trophy {
+  font-size: 1.75rem;
+  color: #d4af37;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  animation: pr-bounce 1.4s ease-in-out infinite;
+}
+
+.progress-pr-label {
+  margin-top: 0.35rem;
+  color: #060b47;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.progress-pr-weight {
+  color: #060b47;
+  font-size: 2.25rem;
+  font-weight: 800;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-pr-units {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+@keyframes progress-pr-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-pr,
+  .progress-pr-trophy {
+    animation: none;
+  }
+}
+
+.progress-share-card {
+  background: #ffffff;
+}
+
+.progress-share-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.progress-share-brand {
+  color: #060b47;
+  font-size: 0.95rem;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+}

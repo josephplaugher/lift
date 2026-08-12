@@ -29,7 +29,8 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
         confirmDeleteModalOpen, setConfirmDeleteModelOpen,
         AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2,
         Set3, setSet3, Set4, setSet4, Set5, setSet5, isBarbellLift,
-        newPr, dismissPr, canSubmit, notifyInvalid, validationMessage, showValidationWarning } = useLiftSession(name, setName, units, setUnits)
+        newPr, dismissPr, canSubmit, notifyInvalid, validationMessage, showValidationWarning,
+        closeEditModal } = useLiftSession(name, setName, units, setUnits)
     const {
         autoStart,
         open: restTimerOpen,
@@ -162,7 +163,7 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
                         </div>
                         <div className="d-flex justify-content-center">
                             <label htmlFor="weight">Weight</label>
-                            <input type="number" style={liftInputStyle} className="mx-2" id="weight" name="Weight" value={selectedSet.Weight} onChange={handleChange} pattern="\d*" inputMode="numeric" required></input>{units == EUnits.Kg ? "Kg" : "Lbs"}
+                            <input type="number" style={liftInputStyle} className="mx-2" id="weight" name="Weight" value={ConvertUnits(units, Number(selectedSet.Weight))} onChange={handleChange} pattern="\d*" inputMode="numeric" required></input>{units == EUnits.Kg ? "Kg" : "Lbs"}
                         </div>
                         <div className="d-flex justify-content-between py-3">
                             <div style={inputgroup}>
@@ -188,12 +189,12 @@ export default function LiftSession({ name, setName, units, setUnits }: { name: 
                         </div>
                         <div className="d-flex justify-content-around">
                             <button type="submit" className="btn btn-lift w-100 p-3 m-2">Save Change</button>
-                            <p className="btn btn-danger w-100 p-3 m-2 text-center"
+                            <button type="button" className="btn btn-danger w-100 p-3 m-2"
                                 onClick={() => {
                                     setEditing(false);
                                     setConfirmDeleteModelOpen(true);
-                                }}>Delete</p>
-                            <button type="button" className="btn btn-secondary w-100 p-3 m-2" onClick={() => setEditing(false)}>Close</button>
+                                }}>Delete</button>
+                            <button type="button" className="btn btn-secondary w-100 p-3 m-2" onClick={closeEditModal}>Close</button>
                         </div>
                     </form>
                     {error && <p>{error}</p>}

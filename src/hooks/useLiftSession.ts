@@ -8,6 +8,14 @@ import useAddSets from "../hooks/useAddSet";
 import { EUnits } from "../interfaces/IUnits.enum";
 import useGetToken from "../hooks/useGetToken";
 import { FetchDelete } from "../utilities/Fetch";
+import { ToStoredKg } from "../utilities/ConvertUnits";
+
+const emptySelectedSet: ILift = {
+    Name: '',
+    Weight: 0,
+    Date: '',
+    Set1: 0,
+};
 
 export default function useLiftSession(name: string, setName: Dispatch<SetStateAction<string>>, units: EUnits, setUnits: Dispatch<SetStateAction<EUnits>>) {
     const token = useGetToken();
@@ -27,12 +35,7 @@ export default function useLiftSession(name: string, setName: Dispatch<SetStateA
     const [kg5, setKg5] = useState<number>(0);
     const [kg2_5, setKg2_5] = useState<number>(0);
     const [editing, setEditing] = useState<boolean>(false);
-    const [selectedSet, setSelectedSet] = useState<ILift>({
-        Name: '',
-        Weight: 0,
-        Date: '',
-        Set1: 0,
-    });
+    const [selectedSet, setSelectedSet] = useState<ILift>(emptySelectedSet);
     const [isBarbellLift, setIsBarbellLift] = useState<boolean>(true);
 
     const liftHistoryQuery = useQuery<ILift[]>({ enabled: token != "" && name != "", queryKey: ['liftHistory', name], queryFn: () => GetLiftHistory(token, name) })
@@ -66,12 +69,27 @@ export default function useLiftSession(name: string, setName: Dispatch<SetStateA
         setIsBarbellLift(selectedLift?.IsBarbellLift ?? false);
     }, [name, liftOptionsQuery.data])
 
-    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {``
+    function closeEditModal() {
+        setEditing(false);
+        // Clear selection so clicking the same row again produces a state change
+        // and re-opens the modal.
+        setSelectedSet(emptySelectedSet);
+    }
+
+    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         const { name, value, type } = e.target;
-        setSelectedSet(prev => ({
-            ...prev,
-            [name]: type === 'number' ? parseInt(value) : value
-        }));
+        setSelectedSet(prev => {
+            if (name === "Weight" && type === "number") {
+                return {
+                    ...prev,
+                    Weight: ToStoredKg(units, parseInt(value, 10)),
+                };
+            }
+            return {
+                ...prev,
+                [name]: type === "number" ? parseInt(value, 10) : value,
+            };
+        });
     }
 
     async function deleteOption() {
@@ -84,12 +102,7 @@ export default function useLiftSession(name: string, setName: Dispatch<SetStateA
             if (result.ok) {
                 liftHistoryQuery.refetch();
                 setUserMsg("Set deleted")
-                setSelectedSet({
-                    Name: '',
-                    Weight: 0,
-                    Date: '',
-                    Set1: 0,
-                });
+                setSelectedSet(emptySelectedSet);
                 setConfirmDeleteModelOpen(false);
                 setTimeout(() => setUserMsg(""), 5000)
             }
@@ -116,7 +129,7 @@ export default function useLiftSession(name: string, setName: Dispatch<SetStateA
         units, setUnits,
         liftHistoryQuery, deleteOption,
         liftOptionsQuery, confirmDelete, setConfirmDelete, confirmDeleteModalOpen, setConfirmDeleteModelOpen,
-        selectedSet, setSelectedSet, handleChange, editing, setEditing,
+        selectedSet, setSelectedSet, handleChange, editing, setEditing, closeEditModal,
         AddSets, UpdateSets, Weight, setWeight, Set1, setSet1, Set2, setSet2, Set3, setSet3, Set4, setSet4, Set5, setSet5,
         isBarbellLift, newPr, dismissPr, canSubmit, notifyInvalid, validationMessage, showValidationWarning
     }

@@ -51,7 +51,7 @@ export default function Authenticated({ user }: TLiftParams) {
                     </div>
                     <div className="col p-0">
                         <button className={`btn btn-lift text-white rounded-0 w-100 p-3 ${tab == ITabOptions.LiftHistory ? "border-info" : "border-dark"}`} onClick={() => setTab(ITabOptions.LiftHistory)}>
-                            History
+                            Progress
                         </button>
                     </div>
                     <div className="col p-0">
