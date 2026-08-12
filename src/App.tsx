@@ -19,6 +19,13 @@ const queryClient = new QueryClient();
 function AppRoutes() {
   const { error, user, isAuthenticated, isLoading } = useAuth();
 
+  const missingRefreshToken = typeof error?.message === "string"
+    && (error.message.toLowerCase().includes("missing refresh token") || error.error === "missing_refresh_token");
+
+  if (error && missingRefreshToken) {
+    return <LoadingIndicator />;
+  }
+
   if (error) {
     return (
       <div className="app-container">

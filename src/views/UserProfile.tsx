@@ -4,6 +4,7 @@ import { ESubscriptionStatusEnum } from '../interfaces/ISubscriptionStatus.enum'
 import useCancelSubscription from '../hooks/useCancelSubscription';
 import { useProfileContext } from '../hooks/ProfileContext';
 import useRestTimerSettings from '../hooks/useRestTimerSettings';
+import useInstallPrompt from '../hooks/useInstallPrompt';
 import barbell from "../images/barbell.svg";
 
 type TProfileParams = {
@@ -50,6 +51,7 @@ export default function UserProfile({
         setAutoStart,
         setMuteChime,
     } = useRestTimerSettings();
+    const { canInstall, showIosHint, install, installed } = useInstallPrompt();
     // Draft string so clearing the field while typing doesn't snap back to 90.
     const [durationDraft, setDurationDraft] = useState(String(durationSeconds));
     const subscribed = isSubscribed(paid);
@@ -127,6 +129,22 @@ export default function UserProfile({
                     <p className="text-muted small fst-italic mb-0">
                         Auto opens the timer after you enter reps; otherwise use the clock button on Lift.
                     </p>
+
+                    {!installed && (canInstall || showIosHint) &&
+                        <div className="mt-4 pt-3 border-top">
+                            <h3 className="h6 mb-2">Add to Home Screen</h3>
+                            {canInstall &&
+                                <button type="button" className="btn btn-lift text-white w-100 p-3" onClick={() => void install()}>
+                                    Install Lift
+                                </button>
+                            }
+                            {showIosHint &&
+                                <p className="text-muted small mb-0">
+                                    iPhone: open this site in <strong>Safari</strong>, tap the Share button, then <strong>Add to Home Screen</strong>. Chrome on iOS cannot install apps.
+                                </p>
+                            }
+                        </div>
+                    }
                 </section>
 
                 <div className="mt-auto mb-4">

@@ -7,14 +7,20 @@ import { Auth0Provider } from '@auth0/auth0-react'
 import { BrowserRouter } from 'react-router-dom'
 import { registerSW } from 'virtual:pwa-register'
 
-const updateSW = registerSW({
-  immediate: true,
-  onNeedRefresh() {
-    if (window.confirm('A new version of Lift is available. Reload now?')) {
-      updateSW(true)
-    }
-  },
-})
+const oauthCallbackInProgress = new URLSearchParams(window.location.search).has('code')
+  || new URLSearchParams(window.location.search).has('state')
+  || new URLSearchParams(window.location.search).has('error')
+
+if (!oauthCallbackInProgress) {
+  const updateSW = registerSW({
+    immediate: true,
+    onNeedRefresh() {
+      if (window.confirm('A new version of Lift is available. Reload now?')) {
+        updateSW(true)
+      }
+    },
+  })
+}
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -31,6 +37,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             : import.meta.env.VITE_API_URL_DEV
         }}
         useRefreshTokens={true}
+        useRefreshTokensFallback={true}
         onRedirectCallback={(appState) => {
           window.history.replaceState(
             {},

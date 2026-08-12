@@ -16,6 +16,10 @@ export default function useGetToken() {
                 setToken(token);
             } catch (error: any) {
                 console.log(error);
+                const message = error?.message?.toLowerCase?.() ?? "";
+                if (error?.error === "missing_refresh_token" || message.includes("missing refresh token")) {
+                    window.location.assign("/login");
+                }
             }
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
