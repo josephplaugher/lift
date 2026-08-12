@@ -23,7 +23,10 @@ export default defineConfig({
       registerType: 'prompt',
       // Installability only — default asset precache is enough for Chrome's SW requirement.
       // No runtime caching / offline data strategies.
-      includeAssets: ['apple-touch-icon.png'],
+      includeAssets: ['apple-touch-icon.png', 'barbell-192x192.png', 'barbell-512x512.png', 'barbell-512x512-maskable.png'],
+      workbox: {
+        navigateFallbackDenylist: [/^\/api\//],
+      },
       manifest: {
         name: 'Lift!',
         short_name: 'Lift',
