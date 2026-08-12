@@ -1,8 +1,7 @@
 import { ErrorIndicator, LoadingIndicator } from "../components/StatusIndicators";
 import { Dispatch, SetStateAction } from "react";
 import { EUnits } from "../interfaces/IUnits.enum";
-import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { RechartsDevtools } from "@recharts/devtools";
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, LabelList } from "recharts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRefresh, faShareNodes, faTrophy } from "@fortawesome/free-solid-svg-icons";
 import useLiftHistory from "../hooks/useLiftHistory";
@@ -27,7 +26,7 @@ export default function LiftHistory({ name, units, setUnits }: { name: string, u
     } = useLiftHistory(name, units, setUnits);
 
     return (
-        <div className="container-fluid px-0">
+        <div className="container-fluid px-0 progress-tab">
             <div className="row my-3 g-0">
                 <div className="col d-flex justify-content-between align-items-center text-center text-lift">
                     <h2 className="ms-2">{name}</h2>
@@ -55,17 +54,27 @@ export default function LiftHistory({ name, units, setUnits }: { name: string, u
                     </div>
                 </div>
             </div>
-            <div className="row mb-5">
-                <div className="row d-flex justify-content-between align-items-center text-center">
-                    <div className="col-6">
-                        <input type="date" className="form-control form-control-sm ms-2" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-                    </div>
-                    <div className="col-6 align-self-end">
-                        <input type="date" className="form-control form-control-sm" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-                    </div>
+            {/* Date inputs must sit outside any overflow ancestor — Firefox
+                dismisses the native picker if a parent is overflow:auto/hidden. */}
+            <div className="row mb-3 g-0 px-2">
+                <div className="col-6 pe-1">
+                    <input
+                        type="date"
+                        className="form-control progress-date-input"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                    />
+                </div>
+                <div className="col-6 ps-1">
+                    <input
+                        type="date"
+                        className="form-control progress-date-input"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                    />
                 </div>
             </div>
-            <div className="row">
+            <div className="row progress-tab-body">
                 <div className="col min-w-0">
                     <div ref={shareRef} className="progress-share-card px-2 pb-3">
                         {historyQuery.status === "pending" ? (
@@ -74,13 +83,24 @@ export default function LiftHistory({ name, units, setUnits }: { name: string, u
                             <ErrorIndicator error={historyQuery.error.message} />
                         ) : (
                             historyQuery.data && historyQuery.data.length > 0 &&
-                            <ResponsiveContainer width="100%" height={chartHeight} aspect={1}>
+                            <ResponsiveContainer width="100%" height={chartHeight}>
                                 <LineChart
                                     data={historyQuery.data}
-                                    margin={{ top: 5, right: 70, left: 15, bottom: 5 }}
+                                    margin={{ top: 18, right: 24, left: 8, bottom: 5 }}
                                 >
                                     <XAxis dataKey="Date" stroke="#060b47" tick={{ fontSize: 10 }} tickCount={4} />
-                                    <YAxis stroke="#060b47" tick={{ fontSize: 10 }} width={30} />
+                                    <YAxis
+                                        stroke="#060b47"
+                                        tick={{ fontSize: 10 }}
+                                        width={36}
+                                        label={{
+                                            value: "Total Volume",
+                                            angle: -90,
+                                            position: "insideLeft",
+                                            offset: 0,
+                                            style: { fill: "#060b47", fontSize: 11, fontWeight: 600, textAnchor: "middle" },
+                                        }}
+                                    />
                                     <Tooltip
                                         content={({ active, payload, label }) => {
                                             if (!active || !payload?.length) return null;
@@ -96,28 +116,32 @@ export default function LiftHistory({ name, units, setUnits }: { name: string, u
                                                 }}>
                                                     <p>{label}</p>
                                                     {payload.map((entry, i) => (
-                                                        <>
-                                                            <p key={i}>
-                                                                Total {entry.name}: {entry.value}
+                                                        <div key={i}>
+                                                            <p>
+                                                                Total Volume: {entry.value}
                                                             </p>
-                                                            <p key={i}><small><em>Weight: {formatWeight(entry.payload.Lift.Weight)}</em></small></p>
-                                                            <p key={i}><small><em>Sets: {entry.payload.Lift.Set1},
+                                                            <p><small><em>Weight: {formatWeight(entry.payload.Lift.Weight)}</em></small></p>
+                                                            <p><small><em>Sets: {entry.payload.Lift.Set1},
                                                                 {entry.payload.Lift.Set2 || 0},
                                                                 {entry.payload.Lift.Set3 || 0},
                                                                 {entry.payload.Lift.Set4 || 0},
                                                                 {entry.payload.Lift.Set5 || 0}
                                                             </em></small></p>
-                                                        </>
+                                                        </div>
                                                     ))}
                                                 </div>
                                             );
                                         }}
                                     />
                                     <Legend wrapperStyle={{ fontSize: 12 }} />
-                                    <Line type="monotone" dataKey={"Load"} stroke="#060b47" dot={false} activeDot={{ r: 6, stroke: "#060b47" }} />
-                                    <g data-share-exclude="true">
-                                        <RechartsDevtools />
-                                    </g>
+                                    <Line type="monotone" dataKey={"Load"} stroke="#060b47" dot={{ r: 3, fill: "#060b47" }} activeDot={{ r: 6, stroke: "#060b47" }}>
+                                        <LabelList
+                                            dataKey="WeightLabel"
+                                            position="top"
+                                            offset={8}
+                                            style={{ fill: "#060b47", fontSize: 10, fontWeight: 600 }}
+                                        />
+                                    </Line>
                                 </LineChart>
                             </ResponsiveContainer>
                         )}

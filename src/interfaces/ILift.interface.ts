@@ -14,4 +14,5 @@ export interface ILiftGraphable {
     Date: string;
     Load: number;
     Lift: ILift;
+    WeightLabel?: string;
 }

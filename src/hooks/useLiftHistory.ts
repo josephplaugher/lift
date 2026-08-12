@@ -51,7 +51,7 @@ export default function useLiftHistory(
     const [endDate, setEndDate] = useState<string>(todayIsoDate());
     const [sharing, setSharing] = useState(false);
     const [shareError, setShareError] = useState<string | null>(null);
-    const chartHeight = Math.round(window.innerHeight * 0.50);
+    const [chartHeight] = useState(() => Math.round(window.innerHeight * 0.32));
 
     const historyQuery = useQuery<ILiftGraphable[]>({
         enabled: token != "",
@@ -60,6 +60,7 @@ export default function useLiftHistory(
         select: (data: ILiftGraphable[]) => data.map((row: ILiftGraphable) => ({
             Date: row.Date,
             Load: units === EUnits.Lbs ? ConvertUnits(units, Number(row.Load)) : Number(row.Load) as number,
+            WeightLabel: String(ConvertUnits(units, Number(row.Lift.Weight))),
             Lift: row.Lift,
         })) as ILiftGraphable[],
     });
