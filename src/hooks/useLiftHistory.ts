@@ -89,10 +89,11 @@ export default function useLiftHistory(
         title.className = "progress-share-title text-lift text-center mb-3";
         title.textContent = name;
         card.prepend(title);
+        let dataUrl: string;
         try {
             // Let layout settle before snapshotting SVG chart nodes.
             await new Promise((resolve) => requestAnimationFrame(() => resolve(undefined)));
-            const dataUrl = await toPng(card, {
+            dataUrl = await toPng(card, {
                 cacheBust: true,
                 pixelRatio: 2,
                 backgroundColor: "#ffffff",
@@ -101,7 +102,19 @@ export default function useLiftHistory(
                     return !node.hasAttribute("data-share-exclude");
                 },
             });
+        } catch (error: any) {
+            title.remove();
+            console.error("Share progress failed", error);
+            setShareError("Could not share that image. Try again.");
+            setSharing(false);
+            return;
+        }
 
+        // Drop the temporary title before the share sheet opens so it doesn't
+        // flash back onto the Progress view while the dialog is up.
+        title.remove();
+
+        try {
             const file = dataUrlToFile(dataUrl, filename);
             const shareData: ShareData = {
                 files: [file],
@@ -122,7 +135,6 @@ export default function useLiftHistory(
             console.error("Share progress failed", error);
             setShareError("Could not share that image. Try again.");
         } finally {
-            title.remove();
             setSharing(false);
         }
     }
