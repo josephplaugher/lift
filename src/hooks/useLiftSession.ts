@@ -54,6 +54,7 @@ export default function useLiftSession(name: string, setName: Dispatch<SetStateA
     }, [liftOptionsQuery.data, name, setName])
 
     useEffect(() => {
+        if(!isBarbellLift) return;
         const w: number = ((kg252 + kg25 + kg202 + kg20 + kg15 + kg10 + kg5 + kg2_5) * 2) + 20;
         setWeight(w)
     }, [setWeight, kg252, kg25, kg202, kg20, kg15, kg10, kg5, kg2_5])
